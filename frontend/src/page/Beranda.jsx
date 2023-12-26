@@ -12,7 +12,7 @@ export default function Beranda ({animes,setAnimes}) {
                 <div className="card">
                     <img src={anime.gambar} className="card-img-top" alt="..." />
                     <div className="card-body">
-                        <h5 className="card-title">{anime.judul.length > 20 ? anime.judul.substring(0,20) + "..." : anime.judul.length}</h5>
+                        <h5 className="card-title">{anime.judul.length > 20 ? anime.judul.substring(0,20) + "..." : anime.judul}</h5>
                     </div>
                 </div>
             </Link>
