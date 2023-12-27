@@ -2,8 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 
-export default function Anime () {
-    const [anime,setAnime] = useState();
+export default function Anime ({anime,setAnime}) {
     const slug = useParams().slug;
 
     useEffect(() => {
@@ -11,7 +10,7 @@ export default function Anime () {
     },[])
 
     async function getAnime () {
-        const response = await axios.get(`http://localhost:5000/anime/${slug}`);
+        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime/${slug}`);
         setAnime(response.data);
     }
 
@@ -38,20 +37,24 @@ export default function Anime () {
                         <li className="list-group-item">{anime.genre}</li>
                     </ul>
             </div>
-            <h4 className="text-center mt-5 mb-3" >Semua Episode</h4>
-            <div className="col-md-12 mb-5">
-                <ol className="list-group">
+            <div className="col-md-12 mb-5 mt-4">
+                <ol className="list-group"> 
+                    <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
                         <Link to={`/episode/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
                             <div className="ms-2 me-auto">
-                            {episode.judul}
+                            Episode {anime.episodes.length- index}
                             </div>
-                            <span className="badge bg-primary d-none d-md-block rounded-pill">{episode.tanggal}</span>
+                            <span className="badge bg-primary rounded-pill">{episode.tanggal}</span>
                         </Link>
                     )}
                 </ol>
             </div>
         </div>
-        : ""}
+        : <div className="row my-3">
+            <div className="col-md-12 d-flex justify-content-center mt-3">
+                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+            </div>
+        </div>}
     </div>
 }

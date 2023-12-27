@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-export default function Episode () {
+export default function Episode ({anime}) {
     const [episode,setEpisode] = useState();
     const [iframe,setIframe] = useState();
     const [nonce,setNonce] = useState();
@@ -15,25 +15,25 @@ export default function Episode () {
     },[])
 
     async function getNonce () {
-        const response = await axios.get("http://localhost:5000/nonce");
+        const response = await axios.get("https://animepi.aimanfadillah.repl.co/nonce");
         setNonce(response.data);
     }
 
     async function getIframe (content) {
-        const response = await axios.get(`http://localhost:5000/getIframe?nonce=${nonce}&content=${content}`)
+        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/getIframe?nonce=${nonce}&content=${content}`)
         const inframeSrc =  (new DOMParser().parseFromString(response.data,"text/html")).querySelector("iframe").getAttribute("src");
         setIframe(inframeSrc);
     }
 
     async function getEpisode () {
-        const response = await axios.get(`http://localhost:5000/episode/${slug}`);
+        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/episode/${slug}`);
         setEpisode(response.data);
         setIframe(response.data.iframe)
     }
 
     return <div className="container my-5">
         {episode ? 
-        <div className="row">
+        <div className="row justify-content-center">
             <div className="col-md-12 mb-2">
                 <h3>{episode.judul}</h3>
             </div>
@@ -42,9 +42,9 @@ export default function Episode () {
                     <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%" height={"500"} ></iframe>
                 </div>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-12 mb-4 mt-2">
                 <div>
-                    <select onChange={(e) => getIframe(e.target.value)} className="form-select d-inline bg-success text-white">
+                    <select onChange={(e) => getIframe(e.target.value)} className="form-select d-inline bg-primary text-light">
                         {episode.mirror.m360p.map((dt,index) => 
                             <option key={index} value={dt.content} >{dt.nama} 360P</option>
                         )}
@@ -57,21 +57,41 @@ export default function Episode () {
                     </select>
                 </div>
             </div>
-            <h1 className="text-center mt-5" >Download</h1>
-            {download.map((type,index) => 
-                <div className="col-md-12 p-2" key={index}>
-                {episode.download[type].length > 0 ? 
-                    <>
-                        <h6>{type.split("p")[0].replace("d"," ")}P {type.includes("mp4") ? "MP4" : "MKV"}</h6>
-                        <div className="d-flex mb-3">
-                            {episode.download[type].map((dt,index) => 
-                                <a target="blank" href={dt.href} key={index} className="me-2 text-decoration-none" >    {dt.nama}</a>
-                                )}
-                        </div>
-                     </>
-                    : ""}
+            <div className="col-md-3 mb-4 col-8">
+                <div className="">
+                    <img src={anime.gambar} className="img-fluid rounded w-100 shadow" alt={anime.judul}/>
                 </div>
-            )}
+            </div>
+            <div className="col-md-9"> 
+                    <ul className="list-group">
+                        <li className="list-group-item">{anime.nama}</li>
+                        <li className="list-group-item">{anime.namaJapan}</li>
+                        <li className="list-group-item">{anime.skor}</li>
+                        <li className="list-group-item">{anime.produser}</li>
+                        <li className="list-group-item">{anime.tipe}</li>
+                        <li className="list-group-item">{anime.status}</li>
+                        <li className="list-group-item">{anime.totalEpisode}</li>
+                        <li className="list-group-item">{anime.durasi}</li>
+                        <li className="list-group-item">{anime.rilis}</li>
+                        <li className="list-group-item">{anime.studio}</li>
+                        <li className="list-group-item">{anime.genre}</li>
+                    </ul>
+            </div>
+            <div className="col-md-12 mt-3">
+                <ul className="list-group">
+                    <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Download</li>
+                    {download.map((type,index) => 
+                        <div  key={index}>
+                            {episode.download[type].length > 0 ? 
+                                <li className="list-group-item">{type.split("p")[0].replace("d"," ")}P {type.includes("mp4") ? "MP4" : "MKV"} : 
+                                    {episode.download[type].map((dt,index) => 
+                                    <a target="blank" href={dt.href} key={index} className="me-2 text-decoration-none" > {dt.nama}</a>)}
+                                </li> 
+                            : ""}
+                        </div>
+                    )}
+                </ul>
+            </div>
         </div>
         : ""}
     </div>

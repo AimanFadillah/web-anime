@@ -58,19 +58,20 @@ app.get("/anime",async (req,res) => {
         const query = req.query
         const endpoint = query.type === "ongoing" ? 
         `https://otakudesu.cam/ongoing-anime/page/${query.page || 1}/` : query.genre ?
-        `https://otakudesu.cam/genres/${query.genre}/page/${query.page || 1}/` : 
+        `https://otakudesu.cam/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
+        `https://otakudesu.cam/?s=${query.search}&post_type=anime` :
         `https://otakudesu.cam/complete-anime/page/${query.page || 1}/`
         const response = await axios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
-        $(query.genre ? ".page" : ".venz").find(query.genre ? ".col-md-4" : "ul > li").each((index,element) => {
+        $(query.genre ? ".page" : query.search ? ".page" : ".venz").find(query.genre ? ".col-md-4" : "ul > li").each((index,element) => {
             data.push({
-                gambar:$(element).find(query.genre ? ".col-anime-cover > img" : ".thumbz > img").attr("src"),
-                judul:$(element).find(query.genre ? ".col-anime-title" : "h2.jdlflm").text(),
-                slug:($(element).find(query.genre ? ".col-anime-trailer > a" : ".thumb > a").attr("href")).split("/")[4],
+                gambar:$(element).find(query.genre ? ".col-anime-cover > img" : query.search ? "img" : ".thumbz > img").attr("src"),
+                judul:$(element).find(query.genre ? ".col-anime-title" : query.search ? "h2 > a" : "h2.jdlflm").text(),
+                slug:($(element).find(query.genre ? ".col-anime-trailer > a" : query.search ? "h2 > a" : ".thumb > a").attr("href")).split("/")[4],
             })
         });
-        res.json(data);
+        res.json(query.search && query.page > 1 ? [] : data);
     }catch(e){
         return res.json(e);
     }
