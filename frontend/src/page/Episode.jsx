@@ -2,17 +2,44 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-export default function Episode ({anime}) {
+export default function Episode ({anime,setAnime}) {
     const [episode,setEpisode] = useState();
     const [iframe,setIframe] = useState();
     const [nonce,setNonce] = useState();
     const download = ["d360pmp4","d480pmp4","d720pmp4","d1080pmp4","d480pmkv","d720pmkv","d1080pmkv"]
-    const slug = useParams().slug
+    const slug = useParams().episode;
+    const slugAnime = useParams().anime;
+    const iframeHeight = window.innerWidth <= 450 ? "500" : "500";
 
     useEffect(() => {
         getNonce()
         getEpisode()
+        if(!anime.gambar){getAnime()}
     },[])
+
+    function setHistory (lastEpisode) {
+        if(!anime.gambar) return false;
+        let historys = JSON.parse(localStorage.getItem("anime")) || [];
+        const history = {
+            gambar:anime.gambar,
+            judul:anime.nama,
+            slug:slugAnime,
+            lastEpisode,
+        }
+        const checkData = historys.find((ht) => ht.slug == history.slug);
+        if(checkData){
+            const index = historys.findIndex((ht) => ht.slug == history.slug);
+            historys.splice(index,1);  
+        }
+        if(historys.length >= 20) historys.pop()
+        historys = [history,...historys];
+        localStorage.setItem("anime",JSON.stringify(historys))
+    }
+
+    async function getAnime () {
+        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime/${slugAnime}`);
+        setAnime(response.data);
+    }
 
     async function getNonce () {
         const response = await axios.get("https://animepi.aimanfadillah.repl.co/nonce");
@@ -29,6 +56,7 @@ export default function Episode ({anime}) {
         const response = await axios.get(`https://animepi.aimanfadillah.repl.co/episode/${slug}`);
         setEpisode(response.data);
         setIframe(response.data.iframe)
+        setHistory((response.data.judul.split("Episode ")[1]).substring(0,2))
     }
 
     return <div className="container my-5">
@@ -39,7 +67,7 @@ export default function Episode ({anime}) {
             </div>
             <div className="col-md-12"> 
                 <div>
-                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%" height={"500"} ></iframe>
+                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%" height={iframeHeight} ></iframe>
                 </div>
             </div>
             <div className="col-md-12 mb-4 mt-2">
@@ -85,7 +113,7 @@ export default function Episode ({anime}) {
                             {episode.download[type].length > 0 ? 
                                 <li className="list-group-item">{type.split("p")[0].replace("d"," ")}P {type.includes("mp4") ? "MP4" : "MKV"} : 
                                     {episode.download[type].map((dt,index) => 
-                                    <a target="blank" href={dt.href} key={index} className="me-2 text-decoration-none" > {dt.nama}</a>)}
+                                    <a target="blank" href={dt.href} key={index} className="badge bg-primary ms-1 text-decoration-none" >{dt.nama}</a>)}
                                 </li> 
                             : ""}
                         </div>
