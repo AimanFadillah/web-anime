@@ -6,7 +6,7 @@ export default function Anime ({anime,setAnime}) {
     const slug = useParams().anime;
 
     useEffect(() => {
-        !anime ? getAnime() : "";
+        !anime.gambar ? getAnime() : "";
     },[])
 
     async function getAnime () {
@@ -15,7 +15,7 @@ export default function Anime ({anime,setAnime}) {
     }
 
     return <div className="container mt-5">
-        {anime ? 
+        {anime.gambar ? 
         <div className="row justify-content-center">
             <div className="col-md-3 mb-4 col-8 ">
                 <div className="">

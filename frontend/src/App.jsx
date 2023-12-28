@@ -8,7 +8,8 @@ import History from "./page/History";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
-  const [anime,setAnime] = useState({}); 
+  const [anime,setAnime] = useState({
+  }); 
   const [page,setPage] = useState(1);
   const [genres,setGenres] = useState([]);
   const [request,setRequest] = useState("type=ongoing");

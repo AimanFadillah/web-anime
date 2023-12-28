@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export default function Beranda ({animes,setAnimes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch}) {
     useEffect(() => {
-        setAnime();
+        setAnime({});
     },[])
 
     return <div className="container mt-5">
