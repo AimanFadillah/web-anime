@@ -5,24 +5,35 @@ import cheerio from "cheerio";
 
 const app = express();
 const port = 5000;
+const contentType = {headers: {"Content-Type": "application/x-www-form-urlencoded"}}
 
 app.use(cors());
 
-app.get("/",async (req,res) => {
+app.get("/genre",async (req,res) => {
+    const response = await axios.get("https://otakudesu.cam/genre-list/");
+    const $ = cheerio.load(response.data);
+    const data = [];
+    $(".genres").find("li > a").each((index,element) => {
+        data.push({
+            judul:$(element).text(),
+            slug:($(element).attr("href")).split("/")[2]
+        });
+    })
+    return res.json(data);
+});
+
+app.get("/getIframe",async (req,res) => {
     try{
-        const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
-        const action = "";
-        const nonce = "";
+        // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
+        const content = JSON.parse(atob(req.query.content));
+        const nonce = req.query.nonce;
         const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
             new URLSearchParams({
                 ...content,
-                nonce:"33f530d984",
-                // action:"aa1208d27f29ca340c92c66d1926f13f",
+                nonce,
                 action:"2a3505c93b0035d3f455df82bf976b84",
             }),
-            {headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }}
+            contentType
         );
         return res.json(atob(response.data.data))
     }catch(e){
@@ -30,19 +41,37 @@ app.get("/",async (req,res) => {
     }
 })
 
+app.get("/nonce",async (req,res) => {
+    try{
+        const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
+            new URLSearchParams({action:"aa1208d27f29ca340c92c66d1926f13f"}),
+            contentType
+        );
+        return res.json(response.data.data)
+    }catch(e){
+        return res.json(e);
+    }
+});
+
 app.get("/anime",async (req,res) => {
     try{ 
-        const response = await axios.get("https://neonime.ink/tvshows/");
+        const query = req.query
+        const endpoint = query.type === "ongoing" ? 
+        `https://otakudesu.cam/ongoing-anime/page/${query.page || 1}/` : query.genre ?
+        `https://otakudesu.cam/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
+        `https://otakudesu.cam/?s=${query.search}&post_type=anime` :
+        `https://otakudesu.cam/complete-anime/page/${query.page || 1}/`
+        const response = await axios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
-        $(".items").find("div.item").each((index,element) => {
+        $(query.genre ? ".page" : query.search ? ".page" : ".venz").find(query.genre ? ".col-md-4" : "ul > li").each((index,element) => {
             data.push({
-                gambar:$(element).find(".image > img").attr("data-src"),
-                judul:$(element).find(".tt").text(),
-                slug:($(element).find("a").attr("href")).split("/")[4],
+                gambar:$(element).find(query.genre ? ".col-anime-cover > img" : query.search ? "img" : ".thumbz > img").attr("src"),
+                judul:$(element).find(query.genre ? ".col-anime-title" : query.search ? "h2 > a" : "h2.jdlflm").text(),
+                slug:($(element).find(query.genre ? ".col-anime-trailer > a" : query.search ? "h2 > a" : ".thumb > a").attr("href")).split("/")[4],
             })
         });
-        res.json(data);
+        res.json(query.search && query.page > 1 ? [] : data);
     }catch(e){
         return res.json(e);
     }
@@ -50,22 +79,38 @@ app.get("/anime",async (req,res) => {
 
 app.get("/anime/:slug",async (req,res) => {
     try{
-        const response = await axios.get(`https://neonime.ink/tvshows/${req.params.slug}/`);
+        const response = await axios.get(`https://otakudesu.cam/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
-        const episodes = [];
-        $(".episodios").find("li").each((index,element) => {
-            episodes.push({
-                judul:$(element).find(".episodiotitle > a").text(),
-                slug:($(element).find(".episodiotitle > a").attr("href")).split("/")[4],
-                tanggal:$(element).find(".episodiotitle > span.date").text(),
-                eps:($(element).find(".numerando").text()).split("x")[1].trim()
-            }); 
-        });
         const data = {
-            gambar:$(".imagen").find("img").attr("data-src"),
-            judul:$(".cover").find("h1").text(),
-            episodes
+            gambar:$(".fotoanime").find("img").attr("src"),
+            judul:$(".jdlrx").find("h1").text().trim(),
+            nama:$(".infozingle").find("p").eq(0).text(),
+            namaJapan:$(".infozingle").find("p").eq(1).text(),
+            skor:$(".infozingle").find("p").eq(2).text(),
+            produser:$(".infozingle").find("p").eq(3).text(),
+            tipe:$(".infozingle").find("p").eq(4).text(),
+            status:$(".infozingle").find("p").eq(5).text(),
+            totalEpisode:$(".infozingle").find("p").eq(6).text(),
+            durasi:$(".infozingle").find("p").eq(7).text(),
+            rilis:$(".infozingle").find("p").eq(8).text(),
+            studio:$(".infozingle").find("p").eq(9).text(),
+            genre:$(".infozingle").find("p").eq(10).text(),
+            episodes : [],
+            batch : {},
+            lengkap : {},
         };
+        function getLink (element,type,push = true) {
+            const dataLink = {
+                judul:$(element).find("span > a").text(),
+                slug:($(element).find("span > a").attr("href")).split("/")[4],
+                tanggal:$(element).find("span").eq(1).text(),
+            }
+            push ? data[type].push(dataLink) : data[type] = dataLink;
+        }
+        $(".episodelist > ul").find("li").each((index,element) => {
+            const href = $(element).find("span > a").attr("href");
+            href.includes("episode") ? getLink(element,"episodes",true) : href.includes("batch") ? getLink(element,"batch",false) : getLink(element,"lengkap",false);
+        });
         res.json(data);
     }catch(e){
         return res.json(e);
@@ -74,24 +119,60 @@ app.get("/anime/:slug",async (req,res) => {
 
 app.get("/episode/:slug",async (req,res) => {
     try{
-        const response = await axios.get(`https://neonime.ink/episode/${req.params.slug}/`);
+        const response = await axios.get(`https://otakudesu.cam/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
-        const iframes = [];
-        const downloads = [];
-        $(".embed2").find("div").each((index,element) => {
-            iframes.push({
-                src:$(element).find("p > iframe").attr("data-src"),
-                nama:$(element).find(".tit").text(),
+        const mirror = {
+            m360p:[],
+            m480p:[],
+            m720p:[],
+        };
+        const download = {
+            d360pmp4:[],
+            d480pmp4:[],
+            d720pmp4:[],
+            d1080pmp4:[],
+            d480pmkv:[],
+            d720pmkv:[],
+            d1080pmkv:[],
+        }
+        function getMirror (kualitas) {
+            $(`.${kualitas}`).find("li").each((index,element) => {
+                mirror[kualitas].push({
+                    nama:$(element).find("a").text(),
+                    content:$(element).find("a").attr("data-content")
+                })
             })
-        })
+        }
+        function getDownload (type,indexUl,indexli) {
+            $(".download").find("ul").eq(indexUl).find("li").eq(indexli).find("a").each((index,element) => {
+                download[type].push({
+                    nama:$(element).text(),
+                    href:$(element).attr("href"),
+                })
+            });
+        }
+        getDownload("d360pmp4",0,0);
+        getDownload("d480pmp4",0,1);
+        getDownload("d720pmp4",0,2);
+        getDownload("d1080pmp4",0,3);
+        getDownload("d480pmkv",1,0);
+        getDownload("d720pmkv",1,1);
+        getDownload("d1080pmkv",1,2);
+        getMirror("m360p")
+        getMirror("m480p")
+        getMirror("m720p")
         const data = {
-            judul:$(".cover").find("h1").text(),
-            iframes
+            judul:$(".posttl").text(),
+            iframe:$(".responsive-embed-stream > iframe").attr("src"),
+            mirror,
+            download,
         };
         return res.json(data);
     }catch(e){
         return res.json(e);
     }
 })
+
+app.get("/",(req,res) => res.send("success"));
 
 app.listen(port,() => console.log("http://localhost:5000/"));
