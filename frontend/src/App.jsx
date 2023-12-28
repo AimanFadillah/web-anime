@@ -1,22 +1,24 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import {BrowserRouter, Route, Routes } from "react-router-dom"
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Beranda from "./page/Beranda"
 import Anime from "./page/Anime";
 import Episode from "./page/Episode";
+import History from "./page/History";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
-  const [anime,setAnime] = useState();
+  const [anime,setAnime] = useState({}); 
   const [page,setPage] = useState(1);
   const [genres,setGenres] = useState([]);
   const [request,setRequest] = useState("type=ongoing");
   const [hasMore,setHasmore] = useState(true);
+  const [search,setSearch] = useState("");
 
   useEffect(() => {
     getAnimes()
     getGenres()
-  },[]);
+  },[]); 
 
   async function getAnimes (reset = false,query = request) {
     reset ? setAnimes([]) : "";
@@ -31,7 +33,7 @@ export default function App () {
     setGenres(response.data);
   }
 
-  return <BrowserRouter>
+  return <BrowserRouter > 
     <Routes>
       <Route path="/" element={
         <Beranda 
@@ -43,10 +45,13 @@ export default function App () {
           setRequest={setRequest}
           setAnime={setAnime}
           hasMore={hasMore}
+          search={search}
+          setSearch={setSearch} 
         />}
       />
-      <Route path="/anime/:slug" element={<Anime anime={anime} setAnime={setAnime} />} />
-      <Route path="/episode/:slug" element={<Episode anime={anime} />} />
+      <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} />} />
+      <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} />} />
+      <Route path="/History" element={<History setAnime={setAnime} />} />
     </Routes>
   </BrowserRouter>
 }

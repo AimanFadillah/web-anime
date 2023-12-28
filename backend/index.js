@@ -69,6 +69,7 @@ app.get("/anime",async (req,res) => {
                 gambar:$(element).find(query.genre ? ".col-anime-cover > img" : query.search ? "img" : ".thumbz > img").attr("src"),
                 judul:$(element).find(query.genre ? ".col-anime-title" : query.search ? "h2 > a" : "h2.jdlflm").text(),
                 slug:($(element).find(query.genre ? ".col-anime-trailer > a" : query.search ? "h2 > a" : ".thumb > a").attr("href")).split("/")[4],
+                eps:($(element).find(query.genre ? ".col-anime-eps" : ".epz").text()).split(query.genre ? " Eps" : "Episode"),
             })
         });
         res.json(query.search && query.page > 1 ? [] : data);

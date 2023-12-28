@@ -3,10 +3,10 @@ import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 
 export default function Anime ({anime,setAnime}) {
-    const slug = useParams().slug;
+    const slug = useParams().anime;
 
     useEffect(() => {
-        getAnime();
+        !anime ? getAnime() : "";
     },[])
 
     async function getAnime () {
@@ -41,7 +41,7 @@ export default function Anime ({anime,setAnime}) {
                 <ol className="list-group"> 
                     <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
-                        <Link to={`/episode/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
+                        <Link to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
                             <div className="ms-2 me-auto">
                             Episode {anime.episodes.length- index}
                             </div>
