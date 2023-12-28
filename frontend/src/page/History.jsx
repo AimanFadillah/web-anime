@@ -6,7 +6,7 @@ export default function History ({setAnime}) {
     const nav = useNavigate();
 
     useEffect(() => {
-        setAnime();
+        setAnime({});
     },[]);
 
     function removeHistory (index) {
