@@ -174,6 +174,38 @@ app.get("/episode/:slug",async (req,res) => {
     }
 })
 
+app.get("/lengkap/:slug",async (req,res) => {
+    try{
+        const response = await axios.get(`https://otakudesu.cam/lengkap/${req.params.slug}`);
+        const $ = cheerio.load(response.data);
+        const data = [];
+        function getDownload (indexH4,type,indexUl,indexli) {
+            $(".download").find("ul").eq(indexUl).find("li").eq(indexli).find("a").each((index,element) => {
+                data[indexH4].download[type].push({
+                    nama:$(element).text(),
+                    href:$(element).attr("href"),
+                })
+            });
+        }
+        $(".download").find("h4").each((index,element) => {
+            data.push({
+                judul:$(element).text(),
+                download:{
+                    d360pmp4:[],
+                    d480pmp4:[],
+                    d720pmp4:[]
+                }
+            })
+            getDownload(index,"d360pmp4",index,0);
+            getDownload(index,"d480pmp4",index,1);
+            getDownload(index,"d720pmp4",index,2);
+        })
+        return res.json(data);
+    }catch(e){
+        return res.json(e);
+    }
+});
+
 app.get("/",(req,res) => res.send("success"));
 
 app.listen(port,() => console.log("http://localhost:5000/"));

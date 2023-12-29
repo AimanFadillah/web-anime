@@ -5,6 +5,7 @@ import Beranda from "./page/Beranda"
 import Anime from "./page/Anime";
 import Episode from "./page/Episode";
 import History from "./page/History";
+import Lengkap from "./page/Lengkap";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
@@ -52,7 +53,8 @@ export default function App () {
       />
       <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} />} />
       <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} />} />
-      <Route path="/History" element={<History setAnime={setAnime} />} />
+      <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} />}  />
+      <Route path="/history" element={<History setAnime={setAnime} />} />
     </Routes>
   </BrowserRouter>
 }

@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 
 export default function Anime ({anime,setAnime}) {
     const slug = useParams().anime;
+    console.log(anime);
 
     useEffect(() => {
         !anime.gambar ? getAnime() : "";
@@ -38,7 +39,7 @@ export default function Anime ({anime,setAnime}) {
                     </ul>
             </div>
             <div className="col-md-12 mb-5 mt-4">
-                <ol className="list-group"> 
+                <ol className="list-group "> 
                     <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
                         <Link to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
@@ -48,6 +49,13 @@ export default function Anime ({anime,setAnime}) {
                             <span className="badge bg-primary rounded-pill">{episode.tanggal}</span>
                         </Link>
                     )}
+                    <li className={`${anime.lengkap.judul ? "" : "d-none"} list-group-item py-1 bg-primary text-light text-center fs-5`}>Download</li>
+                    <Link to={`/lengkap/${slug}/${anime.lengkap.slug}`} className={`${anime.lengkap.judul ? "" : "d-none"} list-group-item d-flex justify-content-between align-items-start`}>
+                        <div className="ms-2 me-auto">
+                            Episode + Batch
+                        </div>
+                        <span className="badge bg-primary rounded-pill">{anime.lengkap.tanggal}</span>
+                    </Link>
                 </ol>
             </div>
         </div>
