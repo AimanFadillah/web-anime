@@ -9,13 +9,19 @@ import Lengkap from "./page/Lengkap";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
-  const [anime,setAnime] = useState({
-  }); 
+  const [anime,setAnime] = useState({}); 
   const [page,setPage] = useState(1);
   const [genres,setGenres] = useState([]);
   const [request,setRequest] = useState("type=ongoing");
   const [hasMore,setHasmore] = useState(true);
   const [search,setSearch] = useState("");
+  const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
+  const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
+
+  useEffect(() => {
+    localStorage.setItem("mode",mode);
+    document.body.setAttribute("data-bs-theme",mode);
+  },[mode]);
 
   useEffect(() => {
     getAnimes()
@@ -48,7 +54,11 @@ export default function App () {
           setAnime={setAnime}
           hasMore={hasMore}
           search={search}
-          setSearch={setSearch} 
+          setSearch={setSearch}
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+          mode={mode}
+          setMode={setMode}
         />}
       />
       <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} />} />
