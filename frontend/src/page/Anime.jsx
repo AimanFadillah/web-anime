@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router-dom";
 
 export default function Anime ({anime,setAnime}) {
     const slug = useParams().anime;
-    console.log(anime);
 
     useEffect(() => {
         !anime.gambar ? getAnime() : "";

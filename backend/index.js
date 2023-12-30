@@ -206,6 +206,29 @@ app.get("/lengkap/:slug",async (req,res) => {
     }
 });
 
+app.get("/jadwal",async (req,res) => {
+    try{
+        const response = await axios.get("https://otakudesu.cam/jadwal-rilis/");
+        const $ = cheerio.load(response.data);
+        const data = [];
+        $(".kgjdwl321").find(".kglist321").each((index,element) => {
+            data.push({
+                hari:$(element).find("h2").text(),
+                anime:[]
+            })
+            $(element).find("ul > li").each((index2,element2) => {
+                data[index].anime.push({
+                    judul:$(element2).find("a").text(),
+                    slug:($(element2).find("a").attr("href")).split("/")[4]
+                })
+            });
+        });
+        return res.json(data);
+    }catch(e){
+        return res.json(e);
+    }
+});
+
 app.get("/",(req,res) => res.send("success"));
 
 app.listen(port,() => console.log("http://localhost:5000/"));

@@ -15,7 +15,6 @@ export default function Lengkap ({anime,setAnime}) {
 
     async function getLengkap () {
         const response = await axios.get(`https://animepi.aimanfadillah.repl.co/lengkap/${slug}`)
-        console.log(response.data); 
         setLengkap(response.data);
     }
 

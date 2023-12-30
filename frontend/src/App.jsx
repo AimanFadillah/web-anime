@@ -6,6 +6,7 @@ import Anime from "./page/Anime";
 import Episode from "./page/Episode";
 import History from "./page/History";
 import Lengkap from "./page/Lengkap";
+import Jadwal from "./page/Jadwal";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
@@ -17,6 +18,7 @@ export default function App () {
   const [search,setSearch] = useState("");
   const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
   const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
+  const [jadwal,setJadwal] = useState([]);
 
   useEffect(() => {
     localStorage.setItem("mode",mode);
@@ -26,6 +28,7 @@ export default function App () {
   useEffect(() => {
     getAnimes()
     getGenres()
+    getJadwal()
   },[]); 
 
   async function getAnimes (reset = false,query = request) {
@@ -40,6 +43,12 @@ export default function App () {
     const response = await axios.get("https://animepi.aimanfadillah.repl.co/genre");
     setGenres(response.data);
   }
+
+  async function getJadwal () {
+    const response = await axios.get("https://animepi.aimanfadillah.repl.co/jadwal");
+    setJadwal(response.data);
+  }
+
 
   return <BrowserRouter > 
     <Routes>
@@ -65,6 +74,7 @@ export default function App () {
       <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} />} />
       <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} />}  />
       <Route path="/history" element={<History setAnime={setAnime} />} />
+      <Route path="/jadwal" element={<Jadwal jadwal={jadwal} setAnime={setAnime} />} />
     </Routes>
   </BrowserRouter>
 }

@@ -22,16 +22,12 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
                 </select>
             </div>
             <div className="col-md-3 col-6 p-0">
-                <div onClick={() => setShowSearch(!showSearch)} className="btn btn-primary" ><i className="bi bi-search"></i></div>
+                <div onClick={() => setShowSearch(!showSearch)} className="btn btn-primary d-md-none  " ><i className="bi bi-search"></i></div>
                 <Link to={"/history"} className="ms-1 btn btn-primary" ><i className="bi bi-clock-history"></i></Link>
                 <div onClick={() => mode === "light" ? setMode("dark") : setMode("light")} className="ms-1 btn btn-primary" >
-                    {mode === "light" 
-                    ? 
-                    <i className="bi bi-moon-stars-fill"></i>
-                    :
-                    <i className="bi bi-sun-fill"></i>
-                    }
+                    {mode === "light" ? <i className="bi bi-moon-stars-fill"></i> : <i className="bi bi-sun-fill"></i>}
                 </div>
+                <Link to={"/jadwal"} className="ms-1 btn btn-primary" ><i className="bi bi-calendar"></i></Link>
             </div>
             <div className={`${showSearch ? "" : "d-none"} col-md-3 offset-md-3 co-12 mt-md-0 mt-2`}>
                 <form onSubmit={(e) => {
