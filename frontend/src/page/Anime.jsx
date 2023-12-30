@@ -6,7 +6,7 @@ export default function Anime ({anime,setAnime}) {
     const slug = useParams().anime;
 
     useEffect(() => {
-        !anime ? getAnime() : "";
+        !anime.gambar ? getAnime() : "";
     },[])
 
     async function getAnime () {
@@ -15,7 +15,7 @@ export default function Anime ({anime,setAnime}) {
     }
 
     return <div className="container mt-5">
-        {anime ? 
+        {anime.gambar ? 
         <div className="row justify-content-center">
             <div className="col-md-3 mb-4 col-8 ">
                 <div className="">
@@ -38,8 +38,8 @@ export default function Anime ({anime,setAnime}) {
                     </ul>
             </div>
             <div className="col-md-12 mb-5 mt-4">
-                <ol className="list-group"> 
-                    <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Semua Episode</li>
+                <ol className="list-group shadow"> 
+                    <li className="list-group-item py-1 bg-primary text-light text-center fs-6">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
                         <Link to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
                             <div className="ms-2 me-auto">
@@ -48,10 +48,20 @@ export default function Anime ({anime,setAnime}) {
                             <span className="badge bg-primary rounded-pill">{episode.tanggal}</span>
                         </Link>
                     )}
+                   
+                </ol>
+                <ol className={`list-group mt-3 ${anime.lengkap.judul ? "" : "d-none"} shadow`}>
+                    <li className={` list-group-item py-1 bg-primary text-light text-center fs-6`}>Download</li>
+                    <Link to={`/lengkap/${slug}/${anime.lengkap.slug}`} className={`list-group-item d-flex justify-content-between align-items-start`}>
+                        <div className="ms-2 me-auto">
+                            Episode + Batch
+                        </div>
+                        <span className="badge bg-primary rounded-pill">{anime.lengkap.tanggal}</span>
+                    </Link>
                 </ol>
             </div>
         </div>
-        : <div className="row my-3">
+        : <div className="row my-3 justify-content-center ">
             <div className="col-md-12 d-flex justify-content-center mt-3">
                 <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
             </div>

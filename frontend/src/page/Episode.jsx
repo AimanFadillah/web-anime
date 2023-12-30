@@ -106,21 +106,23 @@ export default function Episode ({anime,setAnime}) {
                     </ul>
             </div>
             <div className="col-md-12 mt-3">
-                <ul className="list-group">
+                <ul className="list-group shadow">
                     <li className="list-group-item py-1 bg-primary text-light text-center fs-5">Download</li>
                     {download.map((type,index) => 
-                        <div  key={index}>
-                            {episode.download[type].length > 0 ? 
-                                <li className="list-group-item">{type.split("p")[0].replace("d"," ")}P {type.includes("mp4") ? "MP4" : "MKV"} : 
-                                    {episode.download[type].map((dt,index) => 
-                                    <a target="blank" href={dt.href} key={index} className="badge bg-primary ms-1 text-decoration-none" >{dt.nama}</a>)}
-                                </li> 
-                            : ""}
-                        </div>
+                        <li className={`list-group-item ${episode.download[type].length > 0 ? "" : "d-none"}`} key={index}>
+                            <div >{type.split("p")[0].replace("d"," ")}P {type.includes("mp4") ? "MP4" : "MKV"} : 
+                                {episode.download[type].map((dt,index) => 
+                                <a target="blank" href={dt.href} key={index} className="badge bg-primary ms-1 text-decoration-none" >{dt.nama}</a>)}
+                            </div> 
+                        </li>
                     )}
                 </ul>
             </div>
         </div>
-        : ""}
+        : <div className="row my-3">
+            <div className="col-md-12 d-flex justify-content-center mt-3">
+                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+            </div>
+        </div>}
     </div>
 }

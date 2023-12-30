@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect } from "react";
 
-export default function Beranda ({animes,setAnimes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch}) {
+export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode}) {
     useEffect(() => {
-        setAnime();
+        setAnime({});
     },[])
 
     return <div className="container mt-5">
         <div className="row mb-3">
-            <div className="col-md-3 col-4">
+            <div className="col-md-3 col-5">
                 <select defaultValue={request} onChange={(e) => {
                     setRequest(e.target.value);
                     getAnimes(true,e.target.value);
@@ -21,7 +21,15 @@ export default function Beranda ({animes,setAnimes,getAnimes,genres,request,setR
                     )}
                 </select>
             </div>
-            <div className="col-md-3 col-6 p-0 pe-1">
+            <div className="col-md-3 col-6 p-0">
+                <div onClick={() => setShowSearch(!showSearch)} className="btn btn-primary d-md-none  " ><i className="bi bi-search"></i></div>
+                <Link to={"/history"} className="ms-1 btn btn-primary" ><i className="bi bi-clock-history"></i></Link>
+                <div onClick={() => mode === "light" ? setMode("dark") : setMode("light")} className="ms-1 btn btn-primary" >
+                    {mode === "light" ? <i className="bi bi-moon-stars-fill"></i> : <i className="bi bi-sun-fill"></i>}
+                </div>
+                <Link to={"/jadwal"} className="ms-1 btn btn-primary" ><i className="bi bi-calendar"></i></Link>
+            </div>
+            <div className={`${showSearch ? "" : "d-none"} col-md-3 offset-md-3 co-12 mt-md-0 mt-2`}>
                 <form onSubmit={(e) => {
                     e.preventDefault();
                     setRequest(`search=${search}`);
@@ -33,19 +41,15 @@ export default function Beranda ({animes,setAnimes,getAnimes,genres,request,setR
                     </div>
                 </form>
             </div>
-            <div className="col-md-3 col-2 p-0">
-                <div className="">
-                    <Link to={"/history"} className="btn btn-primary" ><i className="bi bi-clock-history"></i></Link>
-                </div>
-            </div>
         </div>
+       
         <InfiniteScroll 
             className="row"
             hasMore={hasMore}
             next={getAnimes}
             dataLength={animes.length}
             loader={
-                <div className="row my-3">
+                <div className="row my-3 mx-0">
                     <div className="col-md-12 d-flex justify-content-center mt-3">
                         <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
                     </div>

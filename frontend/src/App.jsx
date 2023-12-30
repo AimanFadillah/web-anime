@@ -5,6 +5,8 @@ import Beranda from "./page/Beranda"
 import Anime from "./page/Anime";
 import Episode from "./page/Episode";
 import History from "./page/History";
+import Lengkap from "./page/Lengkap";
+import Jadwal from "./page/Jadwal";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
@@ -14,10 +16,19 @@ export default function App () {
   const [request,setRequest] = useState("type=ongoing");
   const [hasMore,setHasmore] = useState(true);
   const [search,setSearch] = useState("");
+  const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
+  const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
+  const [jadwal,setJadwal] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem("mode",mode);
+    document.body.setAttribute("data-bs-theme",mode);
+  },[mode]);
 
   useEffect(() => {
     getAnimes()
     getGenres()
+    getJadwal()
   },[]); 
 
   async function getAnimes (reset = false,query = request) {
@@ -33,6 +44,12 @@ export default function App () {
     setGenres(response.data);
   }
 
+  async function getJadwal () {
+    const response = await axios.get("https://animepi.aimanfadillah.repl.co/jadwal");
+    setJadwal(response.data);
+  }
+
+
   return <BrowserRouter > 
     <Routes>
       <Route path="/" element={
@@ -46,12 +63,18 @@ export default function App () {
           setAnime={setAnime}
           hasMore={hasMore}
           search={search}
-          setSearch={setSearch} 
+          setSearch={setSearch}
+          showSearch={showSearch}
+          setShowSearch={setShowSearch}
+          mode={mode}
+          setMode={setMode}
         />}
       />
       <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} />} />
       <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} />} />
-      <Route path="/History" element={<History setAnime={setAnime} />} />
+      <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} />}  />
+      <Route path="/history" element={<History setAnime={setAnime} />} />
+      <Route path="/jadwal" element={<Jadwal jadwal={jadwal} setAnime={setAnime} />} />
     </Routes>
   </BrowserRouter>
 }
