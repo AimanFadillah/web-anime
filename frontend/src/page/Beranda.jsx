@@ -56,8 +56,8 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
                 </div>
             }
             endMessage={
-                <div className={`row my-3`}>
-                    <div className="col-md-12 d-flex justify-content-center mt-3 ">
+                <div className={`row my-3 mx-0`}>
+                    <div className="col-md-12 d-flex justify-content-center mt-3">
                         <h5 className={`${request.split("type=")[1] === "ongoing" ? "" : "d-none"}`} >Anime {request.split("type=")} sudah habis </h5>
                     </div>
                 </div>
