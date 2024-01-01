@@ -41,8 +41,8 @@ export default function Anime ({anime,setAnime}) {
                 <ol className="list-group shadow"> 
                     <li className="list-group-item py-1 bg-primary text-light text-center fs-6">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
-                        <Link to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
-                            <div className="ms-2 me-auto">
+                        <Link onClick={() => episode.click = true} to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
+                            <div className={`ms-2 me-auto ${episode.click ? "text-secondary" : ""}`}>
                             Episode {anime.episodes.length- index}
                             </div>
                             <span className="badge bg-primary rounded-pill">{episode.tanggal}</span>
