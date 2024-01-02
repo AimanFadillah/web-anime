@@ -174,7 +174,7 @@ app.get("/episode/:slug",async (req,res) => {
     }
 })
 
-app.get("/lengkap/:slug",async (req,res) => {
+app.get("/lengkap/:slug",async (req,res) => { 
     try{
         const response = await axios.get(`https://otakudesu.cam/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
@@ -225,10 +225,17 @@ app.get("/jadwal",async (req,res) => {
         });
         return res.json(data);
     }catch(e){
-        return res.json(e);
+        return res.json(e); 
     }
 });
 
-app.get("/",(req,res) => res.send("success"));
+app.get("/",(req,res) => {
+    console.log(req.protocol)
+    console.log(req.get("host"))
+    console.log(req.originalUrl)
+    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log('Full URL:', fullUrl);
+    res.send("success")
+});
 
 app.listen(port,() => console.log("http://localhost:5000/"));

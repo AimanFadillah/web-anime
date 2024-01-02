@@ -75,8 +75,16 @@ export default function Episode ({anime,setAnime}) {
             setIframe(response.data.iframe)
         }
         setEpisode(response.data);
-        setHistory((response.data.judul.split("Episode ")[1]).substring(0,2))
+        anime.gambar ? 
+        setHistory(filterEpisode(response.data.judul)) : undefined
         setLoading(false);
+    }
+
+    function filterEpisode (text) {
+        let episode = text.replace("Subtitle Indonesia","")
+        episode = episode.replace("(End)","")
+        episode = (episode.trim().split(" ")).slice(-2).join(" ");
+        return episode;
     }
 
     return <div className="container my-5">
@@ -121,7 +129,9 @@ export default function Episode ({anime,setAnime}) {
                         history.replaceState(undefined,undefined,`/anime/${slugAnime}/${e.target.value}`)    
                     }} defaultValue={slug} className="border-0 shadow form-select d-inline bg-primary text-light">
                         {anime.episodes.map((episode,index) => 
-                            <option key={index} value={episode.slug} >Episode {anime.episodes.length - index}</option>
+                            <option key={index} value={episode.slug} >
+                                {filterEpisode(episode.judul)}
+                            </option>
                         )}
                     </select>
                 </div>
