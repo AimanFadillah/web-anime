@@ -26,6 +26,7 @@ export default function Episode ({anime,setAnime}) {
             gambar:anime.gambar,
             judul:anime.nama,
             slug:slugAnime,
+            slugEpisode:slug,
             lastEpisode,
         }
         const checkData = historys.find((ht) => ht.slug == history.slug);
