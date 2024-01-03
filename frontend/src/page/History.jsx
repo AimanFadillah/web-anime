@@ -22,10 +22,10 @@ export default function History ({setAnime}) {
             {animesHistory.map((anime,index) => 
                 <div className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
                     <div className="shadow card">
-                        <img onClick={() => nav(`/anime/${anime.slug}`)} src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
+                        <img onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}`) : nav(`/anime/${anime.slug}`)} src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
                         <div className="card-body">
-                            <h1 onClick={() => nav(`/anime/${anime.slug}`)} className="card-title fs-5">{(anime.judul.split(": ")[1]).length > 18 ? (anime.judul.split(": ")[1]).substring(0,18) + "..." : (anime.judul.split(": ")[1])}</h1>
-                            <h6 onClick={() => nav(`/anime/${anime.slug}`)} className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.lastEpisode}</h6>
+                            <h1 onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}`) : nav(`/anime/${anime.slug}`)} className="card-title fs-5">{(anime.judul.split("Judul: ")[1]).length > 18 ? (anime.judul.split("Judul: ")[1]).substring(0,18) + "..." : (anime.judul.split("Judul: ")[1])}</h1>
+                            <h6 onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}`) : nav(`/anime/${anime.slug}`)} className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >{anime.lastEpisode}</h6>
                             <div className="badge bg-danger ms-1" onClick={() => removeHistory(index)} ><i className="bi bi-trash"></i></div>
                         </div>
                     </div>

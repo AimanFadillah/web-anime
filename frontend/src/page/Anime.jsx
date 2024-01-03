@@ -14,6 +14,13 @@ export default function Anime ({anime,setAnime}) {
         setAnime(response.data);
     }
 
+    function filterEpisode (text) {
+        let episode = text.replace("Subtitle Indonesia","")
+        episode = episode.replace("(End)","")
+        episode = (episode.trim().split(" ")).slice(-2).join(" ");
+        return episode;
+    }
+
     return <div className="container mt-5">
         {anime.gambar ? 
         <div className="row justify-content-center">
@@ -41,9 +48,9 @@ export default function Anime ({anime,setAnime}) {
                 <ol className="list-group shadow"> 
                     <li className="list-group-item py-1 bg-primary text-light text-center fs-6">Semua Episode</li>
                     {anime.episodes.map((episode,index) => 
-                        <Link to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
-                            <div className="ms-2 me-auto">
-                            Episode {anime.episodes.length- index}
+                        <Link onClick={() => episode.click = true} to={`/anime/${slug}/${episode.slug}`} key={index} className="list-group-item d-flex justify-content-between align-items-start">
+                            <div className={`ms-2 me-auto ${episode.click ? "text-secondary" : ""}`}>
+                                {filterEpisode(episode.judul)}
                             </div>
                             <span className="badge bg-primary rounded-pill">{episode.tanggal}</span>
                         </Link>
