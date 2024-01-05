@@ -143,8 +143,10 @@ export default function Episode ({anime,setAnime,endpoint}) {
             <div className="col-md-6 mt-2 pe-md-1">
                 <div data-bs-theme="dark" >
                     <select defaultValue={mirror} onChange={(e) => {
-                        setLoading(true),
-                        getIframe(e.target.value)
+                        setLoading(true);
+                        getIframe(e.target.value);
+                        const {nama,kulitas} = getOption();
+                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${slug}?mirror=${nama}_${kulitas}`)    
                     }} className="selectMirror border-0 shadow form-select d-inline bg-primary text-light">
                         {episode.mirror.m360p.map((dt,index) => 
                             <option key={index} className="mirror" value={dt.content} >{dt.nama} 360P</option>
@@ -163,7 +165,8 @@ export default function Episode ({anime,setAnime,endpoint}) {
                     <select onChange={(e) => {
                         setLoading(true),
                         setSlug(e.target.value)
-                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${e.target.value}`)    
+                        const paramsMirror = new URL(window.location.href).searchParams.get("mirror");
+                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${e.target.value}${paramsMirror ? `?mirror=${paramsMirror}` : ""}`)    
                     }} defaultValue={slug} className="border-0 shadow form-select d-inline bg-primary text-light">
                         {anime.episodes.map((episode,index) => 
                             <option key={index} value={episode.slug} >
