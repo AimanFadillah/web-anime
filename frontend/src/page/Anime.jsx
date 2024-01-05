@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 
-export default function Anime ({anime,setAnime}) {
+export default function Anime ({anime,setAnime,endpoint}) {
     const slug = useParams().anime;
 
     useEffect(() => {
@@ -10,7 +10,7 @@ export default function Anime ({anime,setAnime}) {
     },[])
 
     async function getAnime () {
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime/${slug}`);
+        const response = await axios.get(`${endpoint}/anime/${slug}`);
         setAnime(response.data);
     }
 

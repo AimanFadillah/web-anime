@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
-export default function Episode ({anime,setAnime}) {
+export default function Episode ({anime,setAnime,endpoint}) {
     const [episode,setEpisode] = useState();
     const [iframe,setIframe] = useState();
     const [mirror,setMirror] = useState();
@@ -14,12 +14,12 @@ export default function Episode ({anime,setAnime}) {
     const iframeHeight = window.innerWidth <= 450 ? "500" : "500";
 
     useEffect(() => {
-        getNonce()
-        getEpisode()
         if(!anime.gambar){getAnime()}
+        getEpisode()
     },[slug])
 
-    function setHistory (lastEpisode) {
+    function setHistory (lastEpisode,content = mirror) {
+        const {nama,kulitas} = getOption();
         if(!anime.gambar) return false;
         let historys = JSON.parse(localStorage.getItem("anime")) || [];
         const history = {
@@ -29,6 +29,7 @@ export default function Episode ({anime,setAnime}) {
             slugEpisode:slug,
             lastEpisode,
         }
+        if(content && nama && kulitas) history.mirror = `${nama}_${kulitas}`
         const checkData = historys.find((ht) => ht.slug == history.slug);
         if(checkData){
             const index = historys.findIndex((ht) => ht.slug == history.slug);
@@ -40,37 +41,47 @@ export default function Episode ({anime,setAnime}) {
     }
 
     async function getAnime () {
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime/${slugAnime}`);
+        const response = await axios.get(`${endpoint}/anime/${slugAnime}`);
         setAnime(response.data);
     }
 
-    async function getNonce () {
-        const response = await axios.get("https://animepi.aimanfadillah.repl.co/nonce");
+    async function getNonce ()   {
+        const response = await axios.get(`${endpoint}/nonce`);
         setNonce(response.data);
+        return response.data
     }
 
     async function getIframe (content) {
         setMirror(content);
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/getIframe?nonce=${nonce}&content=${content}`)
+        let customnonce;
+        if(!nonce) customnonce = await getNonce();
+        const response = await axios.get(`${endpoint}/getIframe?nonce=${nonce || customnonce}&content=${content}`)
         const inframeSrc =  (new DOMParser().parseFromString(response.data,"text/html")).querySelector("iframe").getAttribute("src");
         setIframe(inframeSrc);
         setLoading(false);
     }
 
     async function getEpisode () {
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/episode/${slug}`);
+        const response = await axios.get(`${endpoint}/episode/${slug}`);
         if(iframe && mirror){
-            const option = document.querySelector(".selectMirror").options[document.querySelector(".selectMirror").selectedIndex];
-            const nama =  (option.innerHTML).split(" ")[0];
-            const kulitas = ((option.innerHTML).split(" ").pop()).replace("P","p")
-            const newMirror = response.data.mirror[`m${kulitas}`].find((dt) => dt.nama.trim() === nama);
+            const {nama,kulitas} = getOption();
+            const newMirror = getMirror(response,kulitas,nama);
             if(newMirror) {
                 getIframe(newMirror.content)
             }else{ 
-                document.querySelector(`.mirror`).setAttribute("selected","true")
-                document.querySelector(`.mirror`).removeAttribute("selected");
+                removeSelected()
                 setIframe(response.data.iframe)
                 setMirror();
+            }
+        }else if(new URL(window.location.href).searchParams.get("mirror")){
+            const paramsMirror = (new URL(window.location.href).searchParams.get("mirror")).trim();
+            const nama = paramsMirror.split("_")[0];
+            const kulitas = paramsMirror.split("_")[1];
+            const newMirror = getMirror(response,kulitas,nama);
+            if(newMirror){
+                getIframe(newMirror.content)
+            }else {
+                setIframe(response.data.iframe)
             }
         }else{
             setIframe(response.data.iframe)
@@ -79,6 +90,27 @@ export default function Episode ({anime,setAnime}) {
         anime.gambar ? 
         setHistory(filterEpisode(response.data.judul)) : undefined
         setLoading(false);
+    }
+
+    function getMirror(response,kulitas,nama){
+        const newMirror = response.data.mirror[`m${kulitas}`] ? response.data.mirror[`m${kulitas}`].find((dt) => dt.nama.trim() === nama) : undefined;
+        return newMirror;
+    }
+    
+    function getOption(){
+        try{
+            const option = document.querySelector(".selectMirror").options[document.querySelector(".selectMirror").selectedIndex];
+            const nama =  (option.innerHTML).split(" ")[0];
+            const kulitas = ((option.innerHTML).split(" ").pop()).replace("P","p")
+            return {nama,kulitas}
+        }catch(e){
+            return {nama:undefined,kulitas:undefined}
+        }
+    }
+
+    function removeSelected () {
+        document.querySelector(`.mirror`).setAttribute("selected","true")
+        document.querySelector(`.mirror`).removeAttribute("selected");
     }
 
     function filterEpisode (text) {
@@ -107,8 +139,11 @@ export default function Episode ({anime,setAnime}) {
             <div className="col-md-6 mt-2 pe-md-1">
                 <div data-bs-theme="dark" >
                     <select defaultValue={mirror} onChange={(e) => {
-                        setLoading(true),
-                        getIframe(e.target.value)
+                        setLoading(true);
+                        getIframe(e.target.value);
+                        const {nama,kulitas} = getOption();
+                        setHistory(filterEpisode(episode.judul),e.target.value) ;
+                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${slug}?mirror=${nama}_${kulitas}`)    
                     }} className="selectMirror border-0 shadow form-select d-inline bg-primary text-light">
                         {episode.mirror.m360p.map((dt,index) => 
                             <option key={index} className="mirror" value={dt.content} >{dt.nama} 360P</option>
@@ -127,7 +162,8 @@ export default function Episode ({anime,setAnime}) {
                     <select onChange={(e) => {
                         setLoading(true),
                         setSlug(e.target.value)
-                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${e.target.value}`)    
+                        const paramsMirror = new URL(window.location.href).searchParams.get("mirror");
+                        history.replaceState(undefined,undefined,`/anime/${slugAnime}/${e.target.value}${paramsMirror ? `?mirror=${paramsMirror}` : ""}`)    
                     }} defaultValue={slug} className="border-0 shadow form-select d-inline bg-primary text-light">
                         {anime.episodes.map((episode,index) => 
                             <option key={index} value={episode.slug} >

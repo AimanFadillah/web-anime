@@ -19,6 +19,9 @@ export default function App () {
   const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
   const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
   const [jadwal,setJadwal] = useState([]);
+  // const endpoint = "https://a2f9f75f-3d76-4016-9144-33d402d134eb-00-2gy02wj5bl6oh.janeway.replit.dev";
+  const endpoint = "https://animeman.glitch.me/api";
+  // const endpoint = "http://localhost:5000";
 
   useEffect(() => {
     localStorage.setItem("mode",mode);
@@ -33,19 +36,19 @@ export default function App () {
 
   async function getAnimes (reset = false,query = request) {
     reset ? setAnimes([]) : "";
-    const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime?page=${!reset ? page : 1}&${query}`);
+    const response = await axios.get(`${endpoint}/anime?page=${!reset ? page : 1}&${query}`);
     response.data.length > 0 ? setHasmore(true) : setHasmore(false);
     setAnimes(!reset ? [...animes,...response.data] : response.data);
     setPage(!reset ? page + 1 : 2);
   }
 
   async function getGenres () {
-    const response = await axios.get("https://animepi.aimanfadillah.repl.co/genre");
+    const response = await axios.get(`${endpoint}/genre`);
     setGenres(response.data);
   }
 
   async function getJadwal () {
-    const response = await axios.get("https://animepi.aimanfadillah.repl.co/jadwal");
+    const response = await axios.get(`${endpoint}/jadwal`);
     setJadwal(response.data);
   }
 
@@ -70,9 +73,9 @@ export default function App () {
           setMode={setMode}
         />}
       />
-      <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} />} />
-      <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} />} />
-      <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} />}  />
+      <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} endpoint={endpoint} />} />
+      <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} endpoint={endpoint} />} />
+      <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} endpoint={endpoint} />}  />
       <Route path="/history" element={<History setAnime={setAnime} />} />
       <Route path="/jadwal" element={<Jadwal jadwal={jadwal} setAnime={setAnime} />} />
     </Routes>
