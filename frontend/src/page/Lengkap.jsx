@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
-export default function Lengkap ({anime,setAnime}) {
+export default function Lengkap ({anime,setAnime,endpoint}) {
     const [lengkap,setLengkap] = useState();
     const slug = useParams().slug;
     const slugAnime = useParams().anime;
@@ -14,12 +14,12 @@ export default function Lengkap ({anime,setAnime}) {
     },[]);
 
     async function getLengkap () {
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/lengkap/${slug}`)
+        const response = await axios.get(`${endpoint}/lengkap/${slug}`)
         setLengkap(response.data);
     }
 
     async function getAnime () {
-        const response = await axios.get(`https://animepi.aimanfadillah.repl.co/anime/${slugAnime}`);
+        const response = await axios.get(`${endpoint}/anime/${slugAnime}`);
         setAnime(response.data);
     }
 

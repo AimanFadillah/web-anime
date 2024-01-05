@@ -1,15 +1,11 @@
-import express from "express";
-import cors from "cors";
-import axios from "axios";
-import cheerio from "cheerio";
+const express = require("express");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-const app = express();
-const port = 5000;
+const Route = express.Router();
 const contentType = {headers: {"Content-Type": "application/x-www-form-urlencoded"}}
 
-app.use(cors());
-
-app.get("/genre",async (req,res) => {
+Route.get("/api/genre",async (req,res) => {
     const response = await axios.get("https://otakudesu.cam/genre-list/");
     const $ = cheerio.load(response.data);
     const data = [];
@@ -22,10 +18,10 @@ app.get("/genre",async (req,res) => {
     return res.json(data);
 });
 
-app.get("/getIframe",async (req,res) => {
+Route.get("/api/getIframe",async (req,res) => {
     try{
         // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
-        const content = JSON.parse(atob(req.query.content));
+        const content = JSON.parse(customAtob(req.query.content));
         const nonce = req.query.nonce;
         const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
             new URLSearchParams({
@@ -35,13 +31,13 @@ app.get("/getIframe",async (req,res) => {
             }),
             contentType
         );
-        return res.json(atob(response.data.data))
+        return res.json(customAtob(response.data.data))
     }catch(e){
         return res.json(e);
     }
 })
 
-app.get("/nonce",async (req,res) => {
+Route.get("/api/nonce",async (req,res) => {
     try{
         const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
             new URLSearchParams({action:"aa1208d27f29ca340c92c66d1926f13f"}),
@@ -53,7 +49,7 @@ app.get("/nonce",async (req,res) => {
     }
 });
 
-app.get("/anime",async (req,res) => {
+Route.get("/api/anime",async (req,res) => {
     try{ 
         const query = req.query
         const endpoint = query.type === "ongoing" ? 
@@ -78,7 +74,7 @@ app.get("/anime",async (req,res) => {
     }
 })
 
-app.get("/anime/:slug",async (req,res) => {
+Route.get("/api/anime/:slug",async (req,res) => {
     try{
         const response = await axios.get(`https://otakudesu.cam/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
@@ -118,7 +114,7 @@ app.get("/anime/:slug",async (req,res) => {
     }
 });
 
-app.get("/episode/:slug",async (req,res) => {
+Route.get("/api/episode/:slug",async (req,res) => {
     try{
         const response = await axios.get(`https://otakudesu.cam/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
@@ -174,7 +170,7 @@ app.get("/episode/:slug",async (req,res) => {
     }
 })
 
-app.get("/lengkap/:slug",async (req,res) => { 
+Route.get("/api/lengkap/:slug",async (req,res) => { 
     try{
         const response = await axios.get(`https://otakudesu.cam/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
@@ -206,7 +202,7 @@ app.get("/lengkap/:slug",async (req,res) => {
     }
 });
 
-app.get("/jadwal",async (req,res) => {
+Route.get("/api/jadwal",async (req,res) => {
     try{
         const response = await axios.get("https://otakudesu.cam/jadwal-rilis/");
         const $ = cheerio.load(response.data);
@@ -229,24 +225,39 @@ app.get("/jadwal",async (req,res) => {
     }
 });
 
-app.get("/",(req,res) => {
-    console.log(req.protocol)
-    console.log(req.get("host"))
-    console.log(req.originalUrl)
-    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log('Full URL:', fullUrl);
-    res.send("success")
-});
-
-app.listen(port,() => console.log("http://localhost:5000/"));
-
-function customAtob(encodedString) {
-    let decodedBinary = atob(encodedString);
-    let decodedCharacters = [];
-    for (let i = 0; i < decodedBinary.length; i++) {
-        decodedCharacters.push(decodedBinary.charCodeAt(i));
+function customAtob(encoded) {
+    const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    function decodeBase64Char(char) {
+      if (char === '=') {
+        return 0;
+      }
+      return base64Chars.indexOf(char);
     }
-    let decodedString = String.fromCharCode.apply(null, decodedCharacters);
-    return decodedString;
+    function decodeBase64(encoded) {
+      let decoded = '';
+      let buffer = 0;
+      let bufferLength = 0;
+      for (let i = 0; i < encoded.length; i++) {
+        const charValue = decodeBase64Char(encoded[i]);
+  
+        if (charValue === -1) {
+          throw new Error('Invalid character in Base64 encoded string.');
+        }
+  
+        buffer = (buffer << 6) | charValue;
+        bufferLength += 6;
+  
+        if (bufferLength >= 8) {
+          bufferLength -= 8;
+          decoded += String.fromCharCode((buffer >> bufferLength) & 0xFF);
+        }
+      }
+  
+      return decoded;
+    }
+    return decodeBase64(encoded);
 }
+  
+  
 
+module.exports = Route;
