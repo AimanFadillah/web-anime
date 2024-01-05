@@ -14,7 +14,6 @@ export default function Episode ({anime,setAnime,endpoint}) {
     const iframeHeight = window.innerWidth <= 450 ? "500" : "500";
 
     useEffect(() => {
-        if(!nonce){getNonce()}
         if(!anime.gambar){getAnime()}
         getEpisode()
     },[slug])
@@ -49,18 +48,15 @@ export default function Episode ({anime,setAnime,endpoint}) {
     async function getNonce ()   {
         const response = await axios.get(`${endpoint}/nonce`);
         setNonce(response.data);
+        return response.data
     }
 
     async function getIframe (content) {
         setMirror(content);
         let customnonce;
-        if(!nonce){
-            const response = await axios.get(`${endpoint}/nonce`);
-            customnonce = response.data;
-        }
+        if(!nonce) customnonce = await getNonce();
         const response = await axios.get(`${endpoint}/getIframe?nonce=${nonce || customnonce}&content=${content}`)
         const inframeSrc =  (new DOMParser().parseFromString(response.data,"text/html")).querySelector("iframe").getAttribute("src");
-        if(episode) setHistory(filterEpisode(episode.judul),content) ;
         setIframe(inframeSrc);
         setLoading(false);
     }
@@ -146,6 +142,7 @@ export default function Episode ({anime,setAnime,endpoint}) {
                         setLoading(true);
                         getIframe(e.target.value);
                         const {nama,kulitas} = getOption();
+                        setHistory(filterEpisode(episode.judul),e.target.value) ;
                         history.replaceState(undefined,undefined,`/anime/${slugAnime}/${slug}?mirror=${nama}_${kulitas}`)    
                     }} className="selectMirror border-0 shadow form-select d-inline bg-primary text-light">
                         {episode.mirror.m360p.map((dt,index) => 
