@@ -8,10 +8,6 @@
     {
     "src":"/(.*)",
     "dest":"/"
-    },
-    {
-    "src":"/assets/(.*)",
-    "dest":"/assets"
     }
   ]
 }
