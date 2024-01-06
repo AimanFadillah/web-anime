@@ -1,1 +1,1 @@
-http://anime.aimanfadillah.repl.co/
+http://animan.fun
