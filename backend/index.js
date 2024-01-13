@@ -43,7 +43,7 @@ app.get("/getIframe",async (req,res) => {
 
 app.get("/nonce",async (req,res) => {
     try{
-        const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
+        const response = await axios.post(`https://otakudesu.media/wp-admin/admin-ajax.php`,
             new URLSearchParams({action:"aa1208d27f29ca340c92c66d1926f13f"}),
             contentType
         );
