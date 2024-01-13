@@ -27,7 +27,7 @@ app.get("/getIframe",async (req,res) => {
         // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
         const content = JSON.parse(atob(req.query.content));
         const nonce = req.query.nonce;
-        const response = await axios.post(`https://otakudesu.cam/wp-admin/admin-ajax.php`,
+        const response = await axios.post(`https://otakudesu.media/wp-admin/admin-ajax.php`,
             new URLSearchParams({
                 ...content,
                 nonce,
