@@ -10,7 +10,7 @@ const contentType = {headers: {"Content-Type": "application/x-www-form-urlencode
 app.use(cors());
 
 app.get("/genre",async (req,res) => {
-    const response = await axios.get("https://otakudesu.cam/genre-list/");
+    const response = await axios.get("https://otakudesu.media/genre-list/");
     const $ = cheerio.load(response.data);
     const data = [];
     $(".genres").find("li > a").each((index,element) => {
@@ -57,10 +57,10 @@ app.get("/anime",async (req,res) => {
     try{ 
         const query = req.query
         const endpoint = query.type === "ongoing" ? 
-        `https://otakudesu.cam/ongoing-anime/page/${query.page || 1}/` : query.genre ?
-        `https://otakudesu.cam/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
-        `https://otakudesu.cam/?s=${query.search}&post_type=anime` :
-        `https://otakudesu.cam/complete-anime/page/${query.page || 1}/`
+        `https://otakudesu.media/ongoing-anime/page/${query.page || 1}/` : query.genre ?
+        `https://otakudesu.media/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
+        `https://otakudesu.media/?s=${query.search}&post_type=anime` :
+        `https://otakudesu.media/complete-anime/page/${query.page || 1}/`
         const response = await axios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
@@ -80,7 +80,7 @@ app.get("/anime",async (req,res) => {
 
 app.get("/anime/:slug",async (req,res) => {
     try{
-        const response = await axios.get(`https://otakudesu.cam/anime/${req.params.slug}/`);
+        const response = await axios.get(`https://otakudesu.media/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const data = {
             gambar:$(".fotoanime").find("img").attr("src"),
@@ -120,7 +120,7 @@ app.get("/anime/:slug",async (req,res) => {
 
 app.get("/episode/:slug",async (req,res) => {
     try{
-        const response = await axios.get(`https://otakudesu.cam/episode/${req.params.slug}/`);
+        const response = await axios.get(`https://otakudesu.media/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const mirror = {
             m360p:[],
@@ -176,7 +176,7 @@ app.get("/episode/:slug",async (req,res) => {
 
 app.get("/lengkap/:slug",async (req,res) => { 
     try{
-        const response = await axios.get(`https://otakudesu.cam/lengkap/${req.params.slug}`);
+        const response = await axios.get(`https://otakudesu.media/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
         const data = [];
         function getDownload (indexH4,type,indexUl,indexli) {
@@ -208,7 +208,7 @@ app.get("/lengkap/:slug",async (req,res) => {
 
 app.get("/jadwal",async (req,res) => {
     try{
-        const response = await axios.get("https://otakudesu.cam/jadwal-rilis/");
+        const response = await axios.get("https://otakudesu.media/jadwal-rilis/");
         const $ = cheerio.load(response.data);
         const data = [];
         $(".kgjdwl321").find(".kglist321").each((index,element) => {
@@ -230,11 +230,6 @@ app.get("/jadwal",async (req,res) => {
 });
 
 app.get("/",(req,res) => {
-    console.log(req.protocol)
-    console.log(req.get("host"))
-    console.log(req.originalUrl)
-    const fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log('Full URL:', fullUrl);
     res.send("success")
 });
 
