@@ -6,11 +6,16 @@ import cheerio from "cheerio";
 const app = express();
 const port = 5000;
 const contentType = { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+const configAxios = axios.create({
+    headers:{
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+    }
+})
 
 app.use(cors());
 
 app.get("/genre", async (req, res) => {
-    const response = await axios.get("https://otakudesu.cloud/genre-list/");
+    const response = await configAxios.get("https://otakudesu.cloud/genre-list/");
     const $ = cheerio.load(response.data);
     const data = [];
     $(".genres").find("li > a").each((index, element) => {
@@ -27,7 +32,7 @@ app.get("/getIframe", async (req, res) => {
         // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
         const content = JSON.parse(atob(req.query.content));
         const nonce = req.query.nonce;
-        const response = await axios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
             new URLSearchParams({
                 ...content,
                 nonce,
@@ -43,7 +48,7 @@ app.get("/getIframe", async (req, res) => {
 
 app.get("/nonce", async (req, res) => {
     try {
-        const response = await axios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
             new URLSearchParams({ action: "aa1208d27f29ca340c92c66d1926f13f" }),
             contentType
         );
@@ -61,7 +66,7 @@ app.get("/anime", async (req, res) => {
                 `https://otakudesu.cloud/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
                     `https://otakudesu.cloud/?s=${query.search}&post_type=anime` :
                     `https://otakudesu.cloud/complete-anime/page/${query.page || 1}/`
-        const response = await axios.get(endpoint);
+        const response = await configAxios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
         $(query.genre ? ".page" : query.search ? ".page" : ".venz").find(query.genre ? ".col-md-4" : "ul > li").each((index, element) => {
@@ -80,7 +85,7 @@ app.get("/anime", async (req, res) => {
 
 app.get("/anime/:slug", async (req, res) => {
     try {
-        const response = await axios.get(`https://otakudesu.cloud/anime/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.cloud/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const data = {
             gambar: $(".fotoanime").find("img").attr("src"),
@@ -120,7 +125,7 @@ app.get("/anime/:slug", async (req, res) => {
 
 app.get("/episode/:slug", async (req, res) => {
     try {
-        const response = await axios.get(`https://otakudesu.cloud/episode/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.cloud/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const mirror = {
             m360p: [],
@@ -176,7 +181,7 @@ app.get("/episode/:slug", async (req, res) => {
 
 app.get("/lengkap/:slug", async (req, res) => {
     try {
-        const response = await axios.get(`https://otakudesu.cloud/lengkap/${req.params.slug}`);
+        const response = await configAxios.get(`https://otakudesu.cloud/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
         const data = [];
         function getDownload(indexH4, type, indexUl, indexli) {
@@ -208,7 +213,7 @@ app.get("/lengkap/:slug", async (req, res) => {
 
 app.get("/jadwal", async (req, res) => {
     try {
-        const response = await axios.get("https://otakudesu.cloud/jadwal-rilis/");
+        const response = await configAxios.get("https://otakudesu.cloud/jadwal-rilis/");
         const $ = cheerio.load(response.data);
         const data = [];
         $(".kgjdwl321").find(".kglist321").each((index, element) => {
