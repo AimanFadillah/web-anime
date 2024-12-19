@@ -10,15 +10,6 @@ const configAxios = axios.create({
     headers:{
         "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
     },
-    proxy: {
-        protocol: 'http',
-        host: 'proxy.scrapingbee.com',
-        port: 8886,
-        auth: {
-            username: '6SXPYHQAN7MG3344ISLUU28KKMPVQ2BI6QCBO1EN7HIVR9UDGCK7S6VFFT4S5RND5ASZ1MXPUWG2C626',
-            password: 'render_js=False&premium_proxy=False&country_code=Id'
-        }
-    }
 })
 
 app.use(cors());
