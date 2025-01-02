@@ -21,7 +21,7 @@ export default function App () {
   const [jadwal,setJadwal] = useState([]);
   // const endpoint = "https://a2f9f75f-3d76-4016-9144-33d402d134eb-00-2gy02wj5bl6oh.janeway.replit.dev";
   // const endpoint = "https://animeman.glitch.me/api";
-  const endpoint = "https://web-anime-psi.vercel.app";
+  const endpoint = "http://test.infind.my.id";
   // const endpoint = "http://localhost:5000";
 
   useEffect(() => {
