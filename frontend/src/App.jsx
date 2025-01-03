@@ -19,10 +19,7 @@ export default function App () {
   const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
   const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
   const [jadwal,setJadwal] = useState([]);
-  // const endpoint = "https://a2f9f75f-3d76-4016-9144-33d402d134eb-00-2gy02wj5bl6oh.janeway.replit.dev";
-  // const endpoint = "https://animeman.glitch.me/api";
   const endpoint = "https://test.infind.my.id";
-  // const endpoint = "http://localhost:5000";
 
   useEffect(() => {
     localStorage.setItem("mode",mode);

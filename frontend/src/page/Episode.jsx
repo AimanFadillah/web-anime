@@ -11,7 +11,6 @@ export default function Episode ({anime,setAnime,endpoint}) {
     const [loading,setLoading] = useState(false);
     const download = ["d360pmp4","d480pmp4","d720pmp4","d1080pmp4","d480pmkv","d720pmkv","d1080pmkv"]
     const slugAnime = useParams().anime;
-    const iframeHeight = window.innerWidth <= 450 ? "500" : "500";
 
     useEffect(() => {
         if(!anime.gambar){getAnime()}
@@ -128,8 +127,8 @@ export default function Episode ({anime,setAnime,endpoint}) {
             </div>
             <div className="col-md-12"> 
                 {!loading ? 
-                <div>
-                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%" height={iframeHeight} ></iframe>
+                <div id="container-iframe" >
+                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%"></iframe>
                 </div>
                 : <div className="d-flex justify-content-center align-items-center " style={{ height:"500px" }} >
                     <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
