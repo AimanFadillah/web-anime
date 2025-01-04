@@ -19,7 +19,9 @@ export default function App () {
   const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
   const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
   const [jadwal,setJadwal] = useState([]);
+  const [isAnimesNull,setIsAnimesNull] = useState(false);
   const endpoint = "https://test.infind.my.id";
+  // const endpoint = "http://localhost:5000";
 
   useEffect(() => {
     localStorage.setItem("mode",mode);
@@ -35,9 +37,18 @@ export default function App () {
   async function getAnimes (reset = false,query = request) {
     reset ? setAnimes([]) : "";
     const response = await axios.get(`${endpoint}/anime?page=${!reset ? page : 1}&${query}`);
-    response.data.length > 0 ? setHasmore(true) : setHasmore(false);
+    const newPage = !reset ? page + 1 : 2;    
     setAnimes(!reset ? [...animes,...response.data] : response.data);
-    setPage(!reset ? page + 1 : 2);
+    setPage(newPage);
+    if(response.data.length > 0){
+      setHasmore(true)
+      setIsAnimesNull(false)
+    }else{
+      if(newPage <= 2){
+        setIsAnimesNull(true)
+      }
+      setHasmore(false);
+    }
   }
 
   async function getGenres () {
@@ -69,6 +80,7 @@ export default function App () {
           setShowSearch={setShowSearch}
           mode={mode}
           setMode={setMode}
+          isAnimesNull={isAnimesNull}
         />}
       />
       <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} endpoint={endpoint} />} />

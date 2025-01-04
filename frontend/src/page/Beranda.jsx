@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect } from "react";
 
-export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode}) {
+export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull}) {
     useEffect(() => {
         setAnime({});
     },[])
@@ -62,18 +62,24 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
                     </div>
                 </div>
             }
-        >
+            >
             {animes.map((anime,index) => 
-            <Link to={`/anime/${anime.slug}`} className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
-                <div className="shadow card">
-                    <img src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
-                    <div className="card-body">
-                        <h1 className="card-title fs-5">{anime.judul.length > 18 ? anime.judul.substring(0,18) + "..." : anime.judul}</h1>
-                        <h6 className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.eps}</h6>
+                <Link to={`/anime/${anime.slug}`} className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
+                    <div className="shadow card">
+                        <img src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
+                        <div className="card-body">
+                            <h1 className="card-title fs-5">{anime.judul.length > 18 ? anime.judul.substring(0,18) + "..." : anime.judul}</h1>
+                            <h6 className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.eps}</h6>
+                        </div>
+                    </div>
+                </Link>
+            )}
+            {!isAnimesNull || <div className={`row my-3 mx-0`}>
+                    <div className="col-12 d-flex justify-content-center mt-3 text-center">
+                        <h5>Maaf, anime yang anda cari tidak tersedia.</h5>
                     </div>
                 </div>
-            </Link>
-            )}
+            }
         </InfiniteScroll>
     </div>
 }
