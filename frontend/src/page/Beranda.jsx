@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect } from "react";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull}) {
     useEffect(() => {
@@ -66,7 +67,7 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
             {animes.map((anime,index) => 
                 <Link to={`/anime/${anime.slug}`} className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
                     <div className="shadow card">
-                        <img loading="lazy" src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
+                        <LazyLoadImage loading="lazy" src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
                         <div className="card-body">
                             <h1 className="card-title fs-5">{anime.judul.length > 18 ? anime.judul.substring(0,18) + "..." : anime.judul}</h1>
                             <h6 className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.eps}</h6>
