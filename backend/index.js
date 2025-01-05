@@ -102,8 +102,8 @@ app.get("/anime/:slug", async (req, res) => {
             studio: $(".infozingle").find("p").eq(9).text(),
             genre: $(".infozingle").find("p").eq(10).text(),
             episodes: [],
-            batch: {},
-            lengkap: {},
+            batch: [],
+            lengkap: [],
         };
         function getLink(element, type, push = true) {
             const dataLink = {
@@ -115,7 +115,7 @@ app.get("/anime/:slug", async (req, res) => {
         }
         $(".episodelist > ul").find("li").each((index, element) => {
             const href = $(element).find("span > a").attr("href");
-            href.includes("episode") ? getLink(element, "episodes", true) : href.includes("batch") ? getLink(element, "batch", false) : getLink(element, "lengkap", false);
+            href.includes("episode") ? getLink(element, "episodes", true) : href.includes("batch") ? getLink(element, "batch", true) : getLink(element, "lengkap", true);
         });
         res.json(data);
     } catch (e) {
