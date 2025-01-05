@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const port = 5000;
 
-app.get("/assets/index-4879b786.js",(req,res) => res.sendFile(__dirname + "/public" + "/assets/index-4879b786.js"));
+app.get("/assets/index-367088a4.js",(req,res) => res.sendFile(__dirname + "/public" + "/assets/index-367088a4.js"));
 app.get("/assets/index-asdasdvwqf.css",(req,res) => res.sendFile(__dirname + "/public" + "/assets/index-asdasdvwqf.css"));
 app.get("/assets/bootstrap-icons-5b2dd4d4.woff2",(req,res) => res.sendFile(__dirname + "/public" + "/assets/bootstrap-icons-5b2dd4d4.woff2"));
 app.get("/assets/bootstrap-icons-d0346eea.woff",(req,res) => res.sendFile(__dirname + "/public" + "/assets/bootstrap-icons-d0346eea.woff"));
