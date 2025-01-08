@@ -1,1 +1,1 @@
-https://anime-man.vercel.app/
+https://anime-man.vercel.app
