@@ -10,7 +10,7 @@ app.get("/favicon.ico",(req,res) => res.sendFile(__dirname + "/public" + "/favic
 app.get("/style.css",(req,res) => res.sendFile(__dirname + "/public" + "/style.css"));
 
 app.get("*",(req,res) => {
-    return res.sendFile(__dirname + "/index.html")
+    return res.sendFile(__dirname + "/index_123.html")
 })
 
 app.listen(port,() => console.log("Serve On"))
