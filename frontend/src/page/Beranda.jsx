@@ -65,8 +65,8 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
             >
             {animes.map((anime,index) => 
                 <Link to={`/anime/${anime.slug}`} className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
-                    <div className="shadow card">
-                        <img src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
+                    <div className="shadow card" style={{ aspectRatio: 3 / 4 }} >
+                        <img src={anime.gambar} className="card-img-top img-fluid" style={{ objectFit:"cover",height:"100%" }} alt={anime.judul} />
                         <div className="card-body">
                             <h1 className="card-title fs-5">{anime.judul.length > 18 ? anime.judul.substring(0,18) + "..." : anime.judul}</h1>
                             <h6 className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.eps}</h6>
