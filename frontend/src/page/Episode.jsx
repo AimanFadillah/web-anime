@@ -139,7 +139,7 @@ export default function Episode ({anime,setAnime,endpoint}) {
             </div>
             <div className="col-md-6 mt-2 pe-md-1">
                 <div data-bs-theme="dark" >
-                    <select defaultValue={mirror} onChange={(e) => {
+                    <select value={mirror} onChange={(e) => {
                         setLoading(true);
                         getIframe(e.target.value);
                         const {nama,kulitas} = getOption();
