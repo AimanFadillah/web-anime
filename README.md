@@ -1,1 +1,1 @@
-http://animan.fun
+https://anime-man.vercel.app
