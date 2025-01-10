@@ -1,4 +1,4 @@
-#container-iframe {
+.container-iframe {
     position: relative;
     height: 0;
     overflow: hidden;
@@ -6,7 +6,7 @@
     border-radius: 10px;
 }
 
-iframe {
+.iframe {
     position: absolute;
     top: 0;
     left: 0;

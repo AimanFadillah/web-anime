@@ -127,11 +127,13 @@ export default function Episode ({anime,setAnime,endpoint}) {
             </div>
             <div className="col-md-12"> 
                 {!loading ? 
-                <div id="container-iframe" >
-                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow" width="100%"></iframe>
+                <div className="container-iframe" style={{ backgroundColor:"#000" }} >
+                    <iframe allowFullScreen={true} src={iframe} className="rounded shadow iframe" width="100%"></iframe>
                 </div>
-                : <div className="d-flex justify-content-center align-items-center " style={{ height:"500px" }} >
-                    <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+                : <div className="d-flex justify-content-center align-items-center container-iframe" style={{ backgroundColor:"#000" }} >
+                    <div className="iframe d-flex justify-content-center align-items-center">
+                        <div className="spinner-border" style={{ width:"3rem",height:"3rem" }} role="status"></div>
+                    </div>
                 </div>
                 }
             </div>
