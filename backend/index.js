@@ -75,13 +75,15 @@ app.get("/info/:judul",async (req,res) => {
             $(div).children("table").each((index,table) => {
                 let img_character = $(table).find("a > img").attr("data-src");
                 let img_voice = $(table).find("table").find("img").attr("data-src");
-                if(img_character.includes("questionmark")){
+                if(!img_character || !img_character){
+                    img_character = "https://cdn.myanimelist.net/images/questionmark.gif"
+                }else if(img_character.includes("questionmark")){
                     img_character = "https://cdn.myanimelist.net/images/questionmark.gif"
                 }else{
                     img_character = img_character.match(/(\/\d+\/\d+\.jpg)/)
                     img_character = img_character ? "https://cdn.myanimelist.net/images/characters" + img_character[1] : null
                 }
-                if(img_voice.includes("questionmark")){
+                if(!img_voice || img_voice.includes("questionmark")){
                     img_voice = "https://cdn.myanimelist.net/images/questionmark.gif"
                 }else{
                     img_voice = img_voice.match(/(\/\d+\/\d+\.jpg)/)
