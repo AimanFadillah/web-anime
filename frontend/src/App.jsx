@@ -11,6 +11,7 @@ import Jadwal from "./page/Jadwal";
 export default function App () {
   const [animes,setAnimes] = useState([]);
   const [anime,setAnime] = useState({}); 
+  const [animeInfo,setAnimeInfo] = useState({});
   const [page,setPage] = useState(1);
   const [genres,setGenres] = useState([]);
   const [request,setRequest] = useState("type=ongoing");
@@ -20,6 +21,7 @@ export default function App () {
   const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
   const [jadwal,setJadwal] = useState([]);
   const [isAnimesNull,setIsAnimesNull] = useState(false);
+  const [axiosToken,setAxiosToken] = useState(false);
   const endpoint = "https://test.infind.my.id";
   // const endpoint = "http://localhost:5000";
 
@@ -81,9 +83,19 @@ export default function App () {
           mode={mode}
           setMode={setMode}
           isAnimesNull={isAnimesNull}
+          setAnimeInfo={setAnimeInfo}
+          axiosToken={axiosToken}
+          setAxiosToken={setAxiosToken}
         />}
       />
-      <Route path="/anime/:anime" element={<Anime anime={anime} setAnime={setAnime} endpoint={endpoint} />} />
+      <Route path="/anime/:anime" element={<Anime 
+        anime={anime}
+        setAnime={setAnime}
+        endpoint={endpoint}
+        animeInfo={animeInfo}
+        setAnimeInfo={setAnimeInfo}  
+        setAxiosToken={setAxiosToken}
+      />} />
       <Route path="/anime/:anime/:episode" element={<Episode anime={anime} setAnime={setAnime} endpoint={endpoint} />} />
       <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} endpoint={endpoint} />}  />
       <Route path="/history" element={<History setAnime={setAnime} />} />

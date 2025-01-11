@@ -58,6 +58,57 @@ app.get("/nonce", async (req, res) => {
     }
 });
 
+app.get("/info/:judul",async (req,res) => {
+    try{
+        const response = await configAxios.get("https://myanimelist.net/anime.php",{
+            params:{
+                cat:"anime",
+                q:req.params.judul
+            }
+        })
+        const cheerio_search = cheerio.load(response.data)
+        const showLink = cheerio_search(".js-categories-seasonal > table > tbody > tr").eq(1).find(".borderClass").eq(1).find(".title > a").eq(0).attr("href")
+        const responseShow = await configAxios.get(showLink)
+        const $ = cheerio.load(responseShow.data)
+        const characters = [];
+        $(".detail-characters-list").eq(0).find("div").each((index,div) => {
+            $(div).children("table").each((index,table) => {
+                let img_character = $(table).find("a > img").attr("data-src");
+                let img_voice = $(table).find("table").find("img").attr("data-src");
+                if(img_character.includes("questionmark")){
+                    img_character = "https://cdn.myanimelist.net/images/questionmark.gif"
+                }else{
+                    img_character = img_character.match(/(\/\d+\/\d+\.jpg)/)
+                    img_character = img_character ? "https://cdn.myanimelist.net/images/characters" + img_character[1] : null
+                }
+                if(img_voice.includes("questionmark")){
+                    img_voice = "https://cdn.myanimelist.net/images/questionmark.gif"
+                }else{
+                    img_voice = img_voice.match(/(\/\d+\/\d+\.jpg)/)
+                    img_voice = img_voice ? "https://cdn.myanimelist.net/images/voiceactors" + img_voice[1] : null
+                }
+                characters.push({
+                    img:img_character,
+                    name:$(table).find("td").eq(1).find("a").text() || null,
+                    role:$(table).find("td").eq(1).find("div > small").text() || null,
+                    voice_name:$(table).find("table").find("a").text().trim() || null,
+                    voice_img:img_voice,
+                })
+            })
+        })
+        const data = {
+            trailer:$(".video-promotion > a").attr("href"),
+            ranked:$("span.numbers.ranked > strong").text(),
+            popularity:$("span.numbers.popularity > strong").text(),
+            members:$("span.numbers.members > strong").text(),
+            characters
+        }
+        return res.send(data);
+    }catch(e){
+        return res.json(e);
+    }
+});
+
 app.get("/anime", async (req, res) => {
     try {
         const query = req.query

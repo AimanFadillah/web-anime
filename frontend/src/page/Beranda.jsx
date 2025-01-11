@@ -2,9 +2,16 @@ import { Link } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect } from "react";
 
-export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull}) {
+export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull,setAnimeInfo,axiosToken,setAxiosToken}) {
     useEffect(() => {
         setAnime({});
+        setAnimeInfo({});
+        return () => {
+            if(axiosToken){
+                axiosToken.cancel("Request dibatalkan karena berpindah halaman.");
+                setAxiosToken(false)
+            }
+        };
     },[])
 
     return <div className="container mt-5">
