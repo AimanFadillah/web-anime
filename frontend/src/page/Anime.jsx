@@ -46,7 +46,7 @@ export default function Anime ({anime,setAnime,endpoint}) {
             </div>
             <div className="col-md-12 mb-5 mt-4">
                 <ol className={`list-group mb-3 ${anime.lengkap.length > 0 ? "" : "d-none"} shadow`}>
-                    <li className={`list-group-item py-1 bg-primary text-light text-center fs-6`}>Downloads</li>
+                    <li className={`list-group-item py-1 bg-primary text-light text-center fs-6`}>Download</li>
                     {anime.lengkap.map((lengkap) => 
                     <Link to={`/lengkap/${slug}/${lengkap.slug}`} className={`list-group-item d-flex justify-content-between align-items-start`}>
                         <div className="ms-2 me-auto">
