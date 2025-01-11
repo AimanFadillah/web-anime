@@ -1,1 +1,1 @@
-https://anime-man.vercel.app
+https://animan.my.id
