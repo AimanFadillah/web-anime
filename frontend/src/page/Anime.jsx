@@ -8,7 +8,7 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
     const [statusInfo,setStatusInfo] = useState(false)
     const [showInfo,setShowInfo] = useState(true)
     const { ref, inView } = useInView({
-        threshold: 0.3, 
+        threshold: 0.1, 
     });
 
     useEffect(() => {
