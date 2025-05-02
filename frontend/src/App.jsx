@@ -7,6 +7,7 @@ import Episode from "./page/Episode";
 import History from "./page/History";
 import Lengkap from "./page/Lengkap";
 import Jadwal from "./page/Jadwal";
+import Page404 from "./page/Page404";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
@@ -100,6 +101,7 @@ export default function App () {
       <Route path="/lengkap/:anime/:slug" element={<Lengkap anime={anime} setAnime={setAnime} endpoint={endpoint} />}  />
       <Route path="/history" element={<History setAnime={setAnime} />} />
       <Route path="/jadwal" element={<Jadwal jadwal={jadwal} setAnime={setAnime} />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   </BrowserRouter>
 }
