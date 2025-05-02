@@ -51,7 +51,7 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
         </div>
        
         <InfiniteScroll 
-            className="row"
+            className="row placeholder-glow"
             hasMore={hasMore}
             next={getAnimes}
             dataLength={animes.length}
@@ -81,11 +81,23 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
                     </div>
                 </Link>
             )}
-            {!isAnimesNull || <div className={`row my-3 mx-0`}>
+            {isAnimesNull == true ?
+                <div className={`row my-3 mx-0`}>
                     <div className="col-12 d-flex justify-content-center mt-3 text-center">
                         <h5>Maaf, anime yang anda cari tidak tersedia.</h5>
                     </div>
                 </div>
+                : animes.length > 0 || Array(20).fill(0).map((_,index) => 
+                    <div className="text-decoration-none col-md-3 col-6 mb-4" key={index} >
+                        <div className="shadow card" style={{ aspectRatio: 3 / 4 }} >
+                            <div className="card-img-top img-fluid placeholder" style={{ height:"100%" }} ></div>
+                            <div className="card-body">
+                                <h5 className="card-title"><span className="placeholder col-8" ></span></h5>
+                                <h5 className="card-title"><span className="placeholder col-5" ></span></h5>
+                            </div>
+                        </div>
+                    </div>
+                )
             }
         </InfiniteScroll>
     </div>
