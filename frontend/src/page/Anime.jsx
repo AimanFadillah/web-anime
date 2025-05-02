@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
+import Page404 from "./Page404";
 
 export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,setAxiosToken}) {
     const slug = useParams().anime;
     const [statusInfo,setStatusInfo] = useState(false)
     const [showInfo,setShowInfo] = useState(true)
+    const [page404,setPage404] = useState(false)
     const { ref, inView } = useInView({
         threshold: 0.1, 
     });
@@ -24,6 +26,9 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
 
     async function getAnime () {
         const response = await axios.get(`${endpoint}/anime/${slug}`);
+        if(!response.data.gambar){
+            setPage404(true)
+        }
         setAnime(response.data);
     }
 
@@ -180,6 +185,8 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
             </div> 
             }
         </div>
+        : page404 == true ?
+        <Page404 />
         : <div className="row my-3 justify-content-center ">
             <div className="col-md-12 d-flex justify-content-center mt-3">
                 <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>

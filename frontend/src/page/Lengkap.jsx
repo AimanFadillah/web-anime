@@ -1,9 +1,11 @@
 import axios from "axios";
+import Page404 from "./Page404";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
 export default function Lengkap ({anime,setAnime,endpoint}) {
     const [lengkap,setLengkap] = useState();
+    const [page404,setPage404] = useState(false);
     const slug = useParams().slug;
     const slugAnime = useParams().anime;
     const download = ["d360pmp4","d480pmp4","d720pmp4"]
@@ -20,6 +22,9 @@ export default function Lengkap ({anime,setAnime,endpoint}) {
 
     async function getAnime () {
         const response = await axios.get(`${endpoint}/anime/${slugAnime}`);
+        if(!response.data.gambar){
+            setPage404(true)
+        }
         setAnime(response.data);
     }
 
@@ -41,7 +46,11 @@ export default function Lengkap ({anime,setAnime,endpoint}) {
     }
 
     return <div className="container my-3">
-        {lengkap ? 
+        {
+        page404 == true ?
+        <Page404/>
+        :
+        lengkap && anime.gambar ?
         <div className="row justify-content-center">
             <div className="col-md-3 mb-4 col-8">
                 <div className="">
