@@ -1,4 +1,5 @@
 import axios from "axios";
+import Page404 from "./Page404";
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
@@ -7,6 +8,7 @@ export default function Episode ({anime,setAnime,endpoint}) {
     const [iframe,setIframe] = useState();
     const [mirror,setMirror] = useState();
     const [nonce,setNonce] = useState();
+    const [page404,setPage404] = useState(false)
     const [slug,setSlug] = useState(useParams().episode);
     const [loading,setLoading] = useState(false);
     const download = ["d360pmp4","d480pmp4","d720pmp4","d1080pmp4","d480pmkv","d720pmkv","d1080pmkv"]
@@ -41,6 +43,9 @@ export default function Episode ({anime,setAnime,endpoint}) {
 
     async function getAnime () {
         const response = await axios.get(`${endpoint}/anime/${slugAnime}`);
+        if(!response.data.gambar){
+            setPage404(true)
+        }
         setAnime(response.data);
     }
 
@@ -62,6 +67,9 @@ export default function Episode ({anime,setAnime,endpoint}) {
 
     async function getEpisode () {
         const response = await axios.get(`${endpoint}/episode/${slug}`);
+        if(response.data.judul == ""){
+            setPage404(true)
+        }
         if(iframe && mirror){
             const {nama,kulitas} = getOption();
             const newMirror = getMirror(response,kulitas,nama);
@@ -120,7 +128,10 @@ export default function Episode ({anime,setAnime,endpoint}) {
     }
 
     return <div className="container my-5">
-        {episode && anime.gambar ? 
+        {
+        page404 == true ?
+        <Page404 /> :
+        episode && anime.gambar ? 
         <div className="row justify-content-center">
             <div className="col-md-12 mb-2">
                 <h3>{episode.judul}</h3>
