@@ -1,7 +1,7 @@
-import express from "express";
-import cors from "cors";
-import axios from "axios";
-import cheerio from "cheerio";
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const app = express();
 const port = 5000;
@@ -15,7 +15,7 @@ const configAxios = axios.create({
 app.use(cors());
 
 app.get("/genre", async (req, res) => {
-    const response = await configAxios.get("https://otakudesu.cloud/genre-list/");
+    const response = await configAxios.get("https://otakudesu.best/genre-list/");
     const $ = cheerio.load(response.data);
     const data = [];
     $(".genres").find("li > a").each((index, element) => {
@@ -32,7 +32,7 @@ app.get("/getIframe", async (req, res) => {
         // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
         const content = JSON.parse(atob(req.query.content));
         const nonce = req.query.nonce;
-        const response = await configAxios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.best/wp-admin/admin-ajax.php`,
             new URLSearchParams({
                 ...content,
                 nonce,
@@ -48,7 +48,7 @@ app.get("/getIframe", async (req, res) => {
 
 app.get("/nonce", async (req, res) => {
     try {
-        const response = await configAxios.post(`https://otakudesu.cloud/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.best/wp-admin/admin-ajax.php`,
             new URLSearchParams({ action: "aa1208d27f29ca340c92c66d1926f13f" }),
             contentType
         );
@@ -115,10 +115,10 @@ app.get("/anime", async (req, res) => {
     try {
         const query = req.query
         const endpoint = query.type === "ongoing" ?
-            `https://otakudesu.cloud/ongoing-anime/page/${query.page || 1}/` : query.genre ?
-                `https://otakudesu.cloud/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
-                    `https://otakudesu.cloud/?s=${query.search}&post_type=anime` :
-                    `https://otakudesu.cloud/complete-anime/page/${query.page || 1}/`
+            `https://otakudesu.best/ongoing-anime/page/${query.page || 1}/` : query.genre ?
+                `https://otakudesu.best/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
+                    `https://otakudesu.best/?s=${query.search}&post_type=anime` :
+                    `https://otakudesu.best/complete-anime/page/${query.page || 1}/`
         const response = await configAxios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
@@ -138,7 +138,7 @@ app.get("/anime", async (req, res) => {
 
 app.get("/anime/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.cloud/anime/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.best/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const data = {
             gambar: $(".fotoanime").find("img").attr("src"),
@@ -178,7 +178,7 @@ app.get("/anime/:slug", async (req, res) => {
 
 app.get("/episode/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.cloud/episode/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.best/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const mirror = {
             m360p: [],
@@ -234,7 +234,7 @@ app.get("/episode/:slug", async (req, res) => {
 
 app.get("/lengkap/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.cloud/lengkap/${req.params.slug}`);
+        const response = await configAxios.get(`https://otakudesu.best/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
         const data = [];
         function getDownload(indexH4, type, indexUl, indexli) {
@@ -266,7 +266,7 @@ app.get("/lengkap/:slug", async (req, res) => {
 
 app.get("/jadwal", async (req, res) => {
     try {
-        const response = await configAxios.get("https://otakudesu.cloud/jadwal-rilis/");
+        const response = await configAxios.get("https://otakudesu.best/jadwal-rilis/");
         const $ = cheerio.load(response.data);
         const data = [];
         $(".kgjdwl321").find(".kglist321").each((index, element) => {
@@ -288,7 +288,7 @@ app.get("/jadwal", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send("success")
+   return res.send("success")
 });
 
 app.listen(port, () => console.log("http://localhost:5000/"));
