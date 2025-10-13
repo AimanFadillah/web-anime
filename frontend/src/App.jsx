@@ -11,10 +11,11 @@ import Page404 from "./page/Page404";
 
 export default function App () {
   const [animes,setAnimes] = useState([]);
-  const [anime,setAnime] = useState({}); 
+  const [anime,setAnime] = useState({});
   const [animeInfo,setAnimeInfo] = useState({});
   const [page,setPage] = useState(1);
   const [genres,setGenres] = useState([]);
+  const [animeList,setAnimeList] = useState([]);
   const [request,setRequest] = useState("type=ongoing");
   const [hasMore,setHasmore] = useState(true);
   const [search,setSearch] = useState("");
@@ -35,6 +36,7 @@ export default function App () {
     getAnimes()
     getGenres()
     getJadwal()
+    getAnimeList()
   },[]); 
 
   async function getAnimes (reset = false,query = request) {
@@ -64,16 +66,22 @@ export default function App () {
     setJadwal(response.data);
   }
 
+  async function getAnimeList () {
+    const response = await axios.get(`${endpoint}/anime-list`);
+    setAnimeList(response.data);
+  }
+
 
   return <BrowserRouter > 
     <Routes>
       <Route path="/" element={
-        <Beranda 
-          animes={animes} 
-          setAnimes={setAnimes} 
-          getAnimes={getAnimes} 
-          genres={genres} 
-          request={request} 
+        <Beranda
+          animes={animes}
+          setAnimes={setAnimes}
+          getAnimes={getAnimes}
+          genres={genres}
+          animeList={animeList}
+          request={request}
           setRequest={setRequest}
           setAnime={setAnime}
           hasMore={hasMore}

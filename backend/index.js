@@ -8,23 +8,46 @@ const port = 5000;
 const contentType = { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
 const configAxios = axios.create({
     headers:{
-        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
+        "User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "origin":"https://otakudesu.best",
+        "referer":"https://otakudesu.best/"
     },
 })
 
 app.use(cors());
 
 app.get("/genre", async (req, res) => {
-    const response = await configAxios.get("https://otakudesu.best/genre-list/");
-    const $ = cheerio.load(response.data);
-    const data = [];
-    $(".genres").find("li > a").each((index, element) => {
-        data.push({
-            judul: $(element).text(),
-            slug: ($(element).attr("href")).split("/")[2]
-        });
-    })
-    return res.json(data);
+    try{
+        const response = await configAxios.get("https://otakudesu.best/genre-list/");
+        const $ = cheerio.load(response.data);
+        const data = [];
+        $(".genres").find("li > a").each((index, element) => {
+            data.push({
+                judul: $(element).text(),
+                slug: ($(element).attr("href")).split("/")[2]
+            });
+        })
+        return res.json(data);
+    }catch(e){
+        return res.json(e);
+    }
+});
+
+app.get('/anime-list',async (req,res) => {
+    try{
+        const response = await configAxios.get("https://otakudesu.best/anime-list/");
+        const $ = cheerio.load(response.data);
+        const data = [];
+        $('.hodebgst').each((index,a) => {
+            data.push({
+                judul:$(a).text(),
+                slug:($(a).attr("href")).split("/")[4]
+            })
+        })
+        return res.json(data);
+    }catch(e){
+        return res.json(e);
+    }
 });
 
 app.get("/getIframe", async (req, res) => {

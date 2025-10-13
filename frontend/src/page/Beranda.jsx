@@ -1,8 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 
-export default function Beranda ({animes,getAnimes,genres,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull,setAnimeInfo,axiosToken,setAxiosToken}) {
+export default function Beranda ({animes,getAnimes,genres,animeList,request,setRequest,setAnime,hasMore,search,setSearch,showSearch,setShowSearch,mode,setMode,isAnimesNull,setAnimeInfo,axiosToken,setAxiosToken}) {
+    const [filteredAnimes, setFilteredAnimes] = useState([]);
+    const [showDropdown, setShowDropdown] = useState(false);
+    const searchRef = useRef(null);
+    const navigate = useNavigate();
+
     useEffect(() => {
         setAnime({});
         setAnimeInfo({});
@@ -13,6 +18,38 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
             }
         };
     },[])
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setShowDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearch(value);
+
+        if (value.trim().length > 0) {
+            const filtered = animeList.filter(anime =>
+                anime.judul.toLowerCase().includes(value.toLowerCase())
+            ).slice(0, 10);
+            setFilteredAnimes(filtered);
+            setShowDropdown(true);
+        } else {
+            setFilteredAnimes([]);
+            setShowDropdown(false);
+        }
+    };
+
+    const handleSelectAnime = (slug) => {
+        setShowDropdown(false);
+        setSearch("");
+        navigate(`/anime/${slug}`);
+    };
 
     return <div className="container mt-5">
         <div className="row mb-3">
@@ -36,17 +73,43 @@ export default function Beranda ({animes,getAnimes,genres,request,setRequest,set
                 </div>
                 <Link to={"/jadwal"} className="ms-1 btn btn-primary" ><i className="bi bi-calendar"></i></Link>
             </div>
-            <div className={`${showSearch ? "" : "d-none"} col-md-3 offset-md-3 co-12 mt-md-0 mt-2`}>
-                <form onSubmit={(e) => {
-                    e.preventDefault();
-                    setRequest(`search=${search}`);
-                    getAnimes(true,`search=${search}`);
-                }}>
+            <div className={`${showSearch ? "" : "d-none"} col-md-3 offset-md-3 co-12 mt-md-0 mt-2`} ref={searchRef}>
+                <div className="position-relative">
                     <div className="input-group">
-                        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} className="form-control" placeholder="Cari Anime" />
-                        <button className="btn btn-primary" ><i className="bi bi-search"></i></button>
+                        <input
+                            type="text"
+                            value={search}
+                            onChange={handleSearchChange}
+                            className="form-control"
+                            placeholder="Cari Anime"
+                            autoComplete="off"
+                        />
+                        <button className="btn btn-primary" onClick={() => setSearch("")}>
+                            <i className={search ? "bi bi-x-lg" : "bi bi-search"}></i>
+                        </button>
                     </div>
-                </form>
+                    {showDropdown && filteredAnimes.length > 0 && (
+                        <div className="search-dropdown">
+                            {filteredAnimes.map((anime, index) => (
+                                <div
+                                    key={index}
+                                    className="search-dropdown-item"
+                                    onClick={() => handleSelectAnime(anime.slug)}
+                                >
+                                    <i className="bi bi-search me-2"></i>
+                                    {anime.judul}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {showDropdown && search.trim().length > 0 && filteredAnimes.length === 0 && (
+                        <div className="search-dropdown">
+                            <div className="search-dropdown-item text-muted">
+                                Anime tidak ditemukan
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
        
