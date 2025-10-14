@@ -16,6 +16,7 @@ export default function Episode ({anime,setAnime,endpoint}) {
     const slugAnime = useParams().anime;
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         if(!anime.gambar){getAnime()}
         getEpisode()
     },[slug])
@@ -235,9 +236,30 @@ export default function Episode ({anime,setAnime,endpoint}) {
                 </ul>
             </div>
         </div>
-        : <div className="row my-3">
-            <div className="col-md-12 d-flex justify-content-center mt-3">
-                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+        : <div className="row my-3 placeholder-glow">
+            <div className="col-md-12 mb-3">
+                <div className="placeholder rounded" style={{height: "32px", width: "300px"}}></div>
+            </div>
+            <div className="col-md-12 mb-2">
+                <div className="placeholder rounded" style={{height: "36px", width: "400px"}}></div>
+            </div>
+            <div className="col-md-12 mb-2">
+                <div className="placeholder rounded shadow" style={{aspectRatio: "16/9", width: "100%"}}></div>
+            </div>
+            <div className="col-md-6 mt-2 pe-md-1">
+                <div className="placeholder rounded shadow" style={{height: "38px", width: "100%"}}></div>
+            </div>
+            <div className="col-md-6 mt-2 mb-4 ps-md-1">
+                <div className="placeholder rounded shadow" style={{height: "38px", width: "100%"}}></div>
+            </div>
+            <div className="col-md-3 mb-4 col-8">
+                <div className="placeholder rounded shadow" style={{aspectRatio: "2/3", width: "100%"}}></div>
+            </div>
+            <div className="col-md-9 placeholder rounded shadow">
+                <div className="placeholder rounded shadow" style={{height: "100%", width: "100%"}}></div>
+            </div>
+            <div className="col-md-12 mt-3">
+                <div className="placeholder rounded shadow" style={{height: "300px", width: "100%"}}></div>
             </div>
         </div>}
     </div>

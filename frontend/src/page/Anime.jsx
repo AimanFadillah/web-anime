@@ -15,6 +15,7 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
     });
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         !anime.gambar ? getAnime() : "";
     },[])
 
@@ -80,7 +81,7 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
                     <img src={anime.gambar} className="img-fluid rounded w-100 shadow" alt={anime.judul}/>
                 </div>
             </div>
-            <div className="col-md-9"> 
+            <div className="col-md-9">
                     <ul className="list-group">
                         <li className="list-group-item">{anime.nama}</li>
                         <li className="list-group-item">{anime.namaJapan}</li>
@@ -200,9 +201,18 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
         </div>
         : page404 == true ?
         <Page404 />
-        : <div className="row my-3 justify-content-center ">
-            <div className="col-md-12 d-flex justify-content-center mt-3">
-                <div className="spinner-border text-primary" style={{width:"3rem",height:"3rem"}} role="status"></div>
+        : <div className="row my-3 justify-content-center placeholder-glow">
+            <div className="col-md-12 mb-3">
+                <div className="placeholder rounded" style={{height: "32px", width: "250px"}}></div>
+            </div>
+            <div className="col-md-3 mb-4 col-8">
+                <div className="placeholder rounded shadow" style={{aspectRatio: "2/3", width: "100%"}}></div>
+            </div>
+            <div className="col-md-9 placeholder rounded shadow">
+                <div className="placeholder rounded shadow" style={{height: "100%", width: "100%"}}></div>
+            </div>
+            <div className="col-md-12 mt-4">
+                <div className="placeholder rounded shadow" style={{height: "450px", width: "100%"}}></div>
             </div>
         </div>}
     </div>
