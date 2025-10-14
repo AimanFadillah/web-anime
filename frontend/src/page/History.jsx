@@ -18,8 +18,22 @@ export default function History ({setAnime}) {
 
 
     return <div className="container">
-        <h1 className="text-center mt-4" ><i className="bi bi-clock-history"></i> History</h1>
-        <div className="row mt-3">
+        <div className="row mt-4 align-items-center">
+            <div className="col-md-12 mb-3 d-flex justify-content-between align-items-center">
+                <nav aria-label="breadcrumb" className="mb-0">
+                    <ol className="breadcrumb mb-0">
+                        <li className="breadcrumb-item">
+                            <Link to="/">Beranda</Link>
+                        </li>
+                        <li className="breadcrumb-item active" aria-current="page">
+                            History
+                        </li>
+                    </ol>
+                </nav>
+                <h4 className="mb-0"><i className="bi bi-clock-history"></i> History</h4>
+            </div>
+        </div>
+        <div className="row">
             {animesHistory.map((anime,index) => 
                 <div className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
                     <div className="shadow card">

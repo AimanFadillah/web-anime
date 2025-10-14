@@ -1,16 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import Page404 from "./Page404";
 
 export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,setAxiosToken}) {
     const slug = useParams().anime;
+    const navigate = useNavigate();
     const [statusInfo,setStatusInfo] = useState(false)
     const [showInfo,setShowInfo] = useState(true)
     const [page404,setPage404] = useState(false)
     const { ref, inView } = useInView({
-        threshold: 0.1, 
+        threshold: 0.1,
     });
 
     useEffect(() => {
@@ -60,8 +61,20 @@ export default function Anime ({anime,setAnime,endpoint,animeInfo,setAnimeInfo,s
     }
 
     return <div className="container mt-5">
-        {anime.gambar ? 
+        {anime.gambar ?
         <div className="row justify-content-center">
+            <div className="col-md-12 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item">
+                            <Link to="/">Beranda</Link>
+                        </li>
+                        <li className="breadcrumb-item active" aria-current="page">
+                            {anime.nama ? anime.nama.split("Judul: ")[1] : "Anime"}
+                        </li>
+                    </ol>
+                </nav>
+            </div>
             <div className="col-md-3 mb-4 col-8 ">
                 <div className="">
                     <img src={anime.gambar} className="img-fluid rounded w-100 shadow" alt={anime.judul}/>

@@ -8,7 +8,20 @@ export default function Jadwal ({jadwal,setAnime}) {
     },[]);
 
     return <div className="container">
-        <h1 className="my-4 text-center" ><i className="bi bi-calendar"></i> Jadwal Anime</h1>
+        <div className="row mt-4">
+            <div className="col-md-12 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item">
+                            <Link to="/">Beranda</Link>
+                        </li>
+                        <li className="breadcrumb-item active" aria-current="page">
+                            Jadwal
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
         {jadwal.length != 0 ? 
         <div className="row">
             {jadwal.map((dt,index) => 

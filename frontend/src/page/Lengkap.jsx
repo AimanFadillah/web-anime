@@ -1,7 +1,7 @@
 import axios from "axios";
 import Page404 from "./Page404";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 
 export default function Lengkap ({anime,setAnime,endpoint}) {
     const [lengkap,setLengkap] = useState();
@@ -52,6 +52,21 @@ export default function Lengkap ({anime,setAnime,endpoint}) {
         :
         lengkap && anime.gambar ?
         <div className="row justify-content-center">
+            <div className="col-md-12 mt-4 mb-3">
+                <nav aria-label="breadcrumb">
+                    <ol className="breadcrumb">
+                        <li className="breadcrumb-item">
+                            <Link to="/">Beranda</Link>
+                        </li>
+                        <li className="breadcrumb-item">
+                            <Link to={`/anime/${slugAnime}`}>{anime.nama ? anime.nama.split("Judul: ")[1] : "Anime"}</Link>
+                        </li>
+                        <li className="breadcrumb-item active" aria-current="page">
+                            Download
+                        </li>
+                    </ol>
+                </nav>
+            </div>
             <div className="col-md-3 mb-4 col-8">
                 <div className="">
                     <img src={anime.gambar} className="img-fluid rounded w-100 shadow" alt={anime.judul}/>
