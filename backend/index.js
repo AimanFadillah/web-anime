@@ -17,8 +17,8 @@ const configAxios = axios.create({
 app.use(cors());
 
 app.get("/genre", async (req, res) => {
-    try{
-        const response = await configAxios.get("https://otakudesu.best/genre-list/");
+    try {
+        const response = await configAxios.get("https://otakudesu.blog/genre-list/");
         const $ = cheerio.load(response.data);
         const data = [];
         $(".genres").find("li > a").each((index, element) => {
@@ -28,24 +28,24 @@ app.get("/genre", async (req, res) => {
             });
         })
         return res.json(data);
-    }catch(e){
+    } catch (e) {
         return res.json(e);
     }
 });
 
-app.get('/anime-list',async (req,res) => {
-    try{
-        const response = await configAxios.get("https://otakudesu.best/anime-list/");
+app.get('/anime-list', async (req, res) => {
+    try {
+        const response = await configAxios.get("https://otakudesu.blog/anime-list/");
         const $ = cheerio.load(response.data);
         const data = [];
-        $('.hodebgst').each((index,a) => {
+        $('.hodebgst').each((index, a) => {
             data.push({
-                judul:$(a).text(),
-                slug:($(a).attr("href")).split("/")[4]
+                judul: $(a).text(),
+                slug: ($(a).attr("href")).split("/")[4]
             })
         })
         return res.json(data);
-    }catch(e){
+    } catch (e) {
         return res.json(e);
     }
 });
@@ -55,7 +55,7 @@ app.get("/getIframe", async (req, res) => {
         // const content = JSON.parse(atob("eyJpZCI6MTUwNzc1LCJpIjowLCJxIjoiMzYwcCJ9"));
         const content = JSON.parse(atob(req.query.content));
         const nonce = req.query.nonce;
-        const response = await configAxios.post(`https://otakudesu.best/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.blog/wp-admin/admin-ajax.php`,
             new URLSearchParams({
                 ...content,
                 nonce,
@@ -71,7 +71,7 @@ app.get("/getIframe", async (req, res) => {
 
 app.get("/nonce", async (req, res) => {
     try {
-        const response = await configAxios.post(`https://otakudesu.best/wp-admin/admin-ajax.php`,
+        const response = await configAxios.post(`https://otakudesu.blog/wp-admin/admin-ajax.php`,
             new URLSearchParams({ action: "aa1208d27f29ca340c92c66d1926f13f" }),
             contentType
         );
@@ -81,12 +81,12 @@ app.get("/nonce", async (req, res) => {
     }
 });
 
-app.get("/info/:judul",async (req,res) => {
-    try{
-        const response = await configAxios.get("https://myanimelist.net/anime.php",{
-            params:{
-                cat:"anime",
-                q:req.params.judul
+app.get("/info/:judul", async (req, res) => {
+    try {
+        const response = await configAxios.get("https://myanimelist.net/anime.php", {
+            params: {
+                cat: "anime",
+                q: req.params.judul
             }
         })
         const cheerio_search = cheerio.load(response.data)
@@ -94,42 +94,42 @@ app.get("/info/:judul",async (req,res) => {
         const responseShow = await configAxios.get(showLink)
         const $ = cheerio.load(responseShow.data)
         const characters = [];
-        $(".detail-characters-list").eq(0).find("div").each((index,div) => {
-            $(div).children("table").each((index,table) => {
+        $(".detail-characters-list").eq(0).find("div").each((index, div) => {
+            $(div).children("table").each((index, table) => {
                 let img_character = $(table).find("a > img").attr("data-src");
                 let img_voice = $(table).find("table").find("img").attr("data-src");
-                if(!img_character || !img_character){
+                if (!img_character || !img_character) {
                     img_character = "https://cdn.myanimelist.net/images/questionmark.gif"
-                }else if(img_character.includes("questionmark")){
+                } else if (img_character.includes("questionmark")) {
                     img_character = "https://cdn.myanimelist.net/images/questionmark.gif"
-                }else{
+                } else {
                     img_character = img_character.match(/(\/\d+\/\d+\.jpg)/)
                     img_character = img_character ? "https://cdn.myanimelist.net/images/characters" + img_character[1] : null
                 }
-                if(!img_voice || img_voice.includes("questionmark")){
+                if (!img_voice || img_voice.includes("questionmark")) {
                     img_voice = "https://cdn.myanimelist.net/images/questionmark.gif"
-                }else{
+                } else {
                     img_voice = img_voice.match(/(\/\d+\/\d+\.jpg)/)
                     img_voice = img_voice ? "https://cdn.myanimelist.net/images/voiceactors" + img_voice[1] : null
                 }
                 characters.push({
-                    img:img_character,
-                    name:$(table).find("td").eq(1).find("a").text() || null,
-                    role:$(table).find("td").eq(1).find("div > small").text() || null,
-                    voice_name:$(table).find("table").find("a").text().trim() || null,
-                    voice_img:img_voice,
+                    img: img_character,
+                    name: $(table).find("td").eq(1).find("a").text() || null,
+                    role: $(table).find("td").eq(1).find("div > small").text() || null,
+                    voice_name: $(table).find("table").find("a").text().trim() || null,
+                    voice_img: img_voice,
                 })
             })
         })
         const data = {
-            trailer:$(".video-promotion > a").attr("href"),
-            ranked:$("span.numbers.ranked > strong").text(),
-            popularity:$("span.numbers.popularity > strong").text(),
-            members:$("span.numbers.members > strong").text(),
+            trailer: $(".video-promotion > a").attr("href"),
+            ranked: $("span.numbers.ranked > strong").text(),
+            popularity: $("span.numbers.popularity > strong").text(),
+            members: $("span.numbers.members > strong").text(),
             characters
         }
         return res.send(data);
-    }catch(e){
+    } catch (e) {
         return res.json(e);
     }
 });
@@ -138,10 +138,10 @@ app.get("/anime", async (req, res) => {
     try {
         const query = req.query
         const endpoint = query.type === "ongoing" ?
-            `https://otakudesu.best/ongoing-anime/page/${query.page || 1}/` : query.genre ?
-                `https://otakudesu.best/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
-                    `https://otakudesu.best/?s=${query.search}&post_type=anime` :
-                    `https://otakudesu.best/complete-anime/page/${query.page || 1}/`
+            `https://otakudesu.blog/ongoing-anime/page/${query.page || 1}/` : query.genre ?
+                `https://otakudesu.blog/genres/${query.genre}/page/${query.page || 1}/` : query.search ?
+                    `https://otakudesu.blog/?s=${query.search}&post_type=anime` :
+                    `https://otakudesu.blog/complete-anime/page/${query.page || 1}/`
         const response = await configAxios.get(endpoint);
         const $ = cheerio.load(response.data);
         const data = [];
@@ -161,7 +161,7 @@ app.get("/anime", async (req, res) => {
 
 app.get("/anime/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.best/anime/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.blog/anime/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const data = {
             gambar: $(".fotoanime").find("img").attr("src"),
@@ -201,7 +201,7 @@ app.get("/anime/:slug", async (req, res) => {
 
 app.get("/episode/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.best/episode/${req.params.slug}/`);
+        const response = await configAxios.get(`https://otakudesu.blog/episode/${req.params.slug}/`);
         const $ = cheerio.load(response.data);
         const mirror = {
             m360p: [],
@@ -257,7 +257,7 @@ app.get("/episode/:slug", async (req, res) => {
 
 app.get("/lengkap/:slug", async (req, res) => {
     try {
-        const response = await configAxios.get(`https://otakudesu.best/lengkap/${req.params.slug}`);
+        const response = await configAxios.get(`https://otakudesu.blog/lengkap/${req.params.slug}`);
         const $ = cheerio.load(response.data);
         const data = [];
         function getDownload(indexH4, type, indexUl, indexli) {
@@ -289,7 +289,7 @@ app.get("/lengkap/:slug", async (req, res) => {
 
 app.get("/jadwal", async (req, res) => {
     try {
-        const response = await configAxios.get("https://otakudesu.best/jadwal-rilis/");
+        const response = await configAxios.get("https://otakudesu.blog/jadwal-rilis/");
         const $ = cheerio.load(response.data);
         const data = [];
         $(".kgjdwl321").find(".kglist321").each((index, element) => {
@@ -311,7 +311,7 @@ app.get("/jadwal", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-   return res.send("success")
+    return res.send("success")
 });
 
 app.listen(port, () => console.log("http://localhost:5000/"));
