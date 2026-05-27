@@ -113,7 +113,7 @@ export default function Beranda ({animes,getAnimes,genres,animeList,request,setR
             </div>
         </div>
        
-        <InfiniteScroll 
+        <InfiniteScroll
             className="row placeholder-glow"
             hasMore={hasMore}
             next={getAnimes}
@@ -135,11 +135,11 @@ export default function Beranda ({animes,getAnimes,genres,animeList,request,setR
             >
             {animes.map((anime,index) => 
                 <Link to={`/anime/${anime.slug}`} className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
-                    <div className="shadow card" style={{ aspectRatio: 3 / 4 }} >
-                        <img src={anime.gambar} className="card-img-top img-fluid" style={{ objectFit:"cover",height:"100%" }} alt={anime.judul} />
-                        <div className="card-body">
-                            <h1 className="card-title fs-5">{anime.judul.length > 18 ? anime.judul.substring(0,18) + "..." : anime.judul}</h1>
-                            <h6 className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >Episode {anime.eps}</h6>
+                    <div className="anime-card" style={{ aspectRatio:"3/4", borderRadius:"0.5rem", overflow:"hidden", position:"relative" }}>
+                        <img src={anime.gambar} className="w-100 h-100" style={{ objectFit:"cover", display:"block" }} alt={anime.judul} />
+                        <div className="anime-card-overlay">
+                            <h6 className={`badge bg-primary mb-1 ${anime.eps == "" ? "d-none" : ""}`}>Episode {anime.eps}</h6>
+                            <p className="anime-card-title">{anime.judul}</p>
                         </div>
                     </div>
                 </Link>
@@ -152,13 +152,7 @@ export default function Beranda ({animes,getAnimes,genres,animeList,request,setR
                 </div>
                 : animes.length > 0 || Array(20).fill(0).map((_,index) => 
                     <div className="text-decoration-none col-md-3 col-6 mb-4" key={index} >
-                        <div className="shadow card" style={{ aspectRatio: 3 / 4 }} >
-                            <div className="card-img-top img-fluid placeholder" style={{ height:"100%" }} ></div>
-                            <div className="card-body">
-                                <h5 className="card-title"><span className="placeholder col-8" ></span></h5>
-                                <h5 className="card-title"><span className="placeholder col-5" ></span></h5>
-                            </div>
-                        </div>
+                        <div className="placeholder d-block w-100" style={{ aspectRatio:"3/4", borderRadius:"0.5rem" }}></div>
                     </div>
                 )
             }

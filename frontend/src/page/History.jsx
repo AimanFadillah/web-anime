@@ -34,14 +34,16 @@ export default function History ({setAnime}) {
             </div>
         </div>
         <div className="row">
-            {animesHistory.map((anime,index) => 
-                <div className=" text-decoration-none col-md-3 col-6 mb-4" key={index} >
-                    <div className="shadow card">
-                        <img onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} src={anime.gambar} className="card-img-top img-fluid" alt={anime.judul} />
-                        <div className="card-body">
-                            <h1 onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} className="card-title fs-5">{(anime.judul.split("Judul: ")[1]).length > 18 ? (anime.judul.split("Judul: ")[1]).substring(0,18) + "..." : (anime.judul.split("Judul: ")[1])}</h1>
-                            <h6 onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} className={`badge bg-primary ${anime.eps == "" ? "d-none" : ""}`} >{anime.lastEpisode}</h6>
-                            <div className="badge bg-danger ms-1" onClick={() => removeHistory(index)} ><i className="bi bi-trash"></i></div>
+            {animesHistory.map((anime,index) =>
+                <div className="text-decoration-none col-md-3 col-6 mb-4" key={index}>
+                    <div className="anime-card" style={{ aspectRatio:"3/4", borderRadius:"0.5rem", overflow:"hidden", position:"relative" }}>
+                        <img onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} src={anime.gambar} className="w-100 h-100" style={{ objectFit:"cover", display:"block", cursor:"pointer" }} alt={anime.judul} />
+                        <div onClick={() => removeHistory(index)} style={{ position:"absolute", top:"0.5rem", right:"0.5rem", cursor:"pointer", background:"#dc3545", borderRadius:"0.5rem", padding:"0.4rem 0.6rem", lineHeight:1, boxShadow:"0 2px 8px rgba(0,0,0,0.4)" }}>
+                            <i className="bi bi-trash-fill text-white" style={{fontSize:"0.95rem"}}></i>
+                        </div>
+                        <div className="anime-card-overlay">
+                            <h6 onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} className={`badge bg-primary mb-1 ${anime.lastEpisode ? "" : "d-none"}`} style={{cursor:"pointer"}}>{anime.lastEpisode}</h6>
+                            <p onClick={() => anime.slugEpisode ? nav(`/anime/${anime.slug}/${anime.slugEpisode}${anime.mirror ? `?mirror=${anime.mirror}` : ""}`) : nav(`/anime/${anime.slug}`)} className="anime-card-title" style={{cursor:"pointer"}}>{anime.judul.split("Judul: ")[1] || anime.judul}</p>
                         </div>
                     </div>
                 </div>
