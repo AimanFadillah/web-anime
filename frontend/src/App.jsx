@@ -20,7 +20,7 @@ export default function App () {
   const [hasMore,setHasmore] = useState(true);
   const [search,setSearch] = useState("");
   const [showSearch,setShowSearch] = useState(window.innerWidth >= 768 ? true : false)
-  const [mode,setMode] = useState(localStorage.getItem("mode") || "light")
+  const [mode,setMode] = useState(localStorage.getItem("mode") || "dark")
   const [jadwal,setJadwal] = useState([]);
   const [isAnimesNull,setIsAnimesNull] = useState(false);
   const [axiosToken,setAxiosToken] = useState(false);

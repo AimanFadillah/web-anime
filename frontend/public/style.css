@@ -73,6 +73,36 @@
     color: var(--bs-secondary-color);
 }
 
+/* Anime card */
+.anime-card {
+    cursor: pointer;
+    position: relative;
+}
+
+.anime-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 0.75rem 0.75rem;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 60%, transparent 100%);
+    border-radius: 0 0 0.5rem 0.5rem;
+}
+
+.anime-card-title {
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+
 /* Custom scrollbar for dropdown */
 .search-dropdown::-webkit-scrollbar {
     width: 8px;
